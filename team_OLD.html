@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Directory | Decarb-AI</title>
+    <style>
+        /* Shared core design system for visual parity */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+            line-height: 1.7;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 18px 0;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #004b87;
+            font-weight: 500;
+            font-size: 1em;
+        }
+
+        /* Context Sub-Header Banner */
+        .page-header {
+            background: #001e3c;
+            color: white;
+            padding: 120px 24px 50px 24px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-weight: 300;
+            font-size: 2.4em;
+            margin: 0 0 10px 0;
+        }
+        .page-header p {
+            font-weight: 300;
+            color: #a5b8cc;
+            margin: 0;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        /* Container & Structural Grid Systems */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 24px;
+            box-sizing: border-box;
+        }
+        
+        .category-block {
+            margin-bottom: 60px;
+        }
+        
+        .category-title {
+            font-size: 1.6em;
+            font-weight: 400;
+            color: #004b87;
+            border-bottom: 1px solid #eef2f5;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* Compact scannable profile layout for 50+ members */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+        }
+        .member-card {
+            background: #ffffff;
+            border: 1px solid #eef2f5;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .member-card img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f4f6f8;
+            margin-bottom: 15px;
+            border: 2px solid #eef2f5;
+        }
+        .member-card h3 {
+            font-size: 1.05em;
+            font-weight: 500;
+            color: #004b87;
+            margin: 0 0 6px 0;
+        }
+        .member-card p {
+            font-size: 0.9em;
+            font-weight: 350;
+            color: #556675;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 0.75em;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .badge-pi { background: #e3f2fd; color: #0d47a1; }
+        .badge-sup { background: #efebe9; color: #4e342e; }
+        .badge-phd { background: #e8f5e9; color: #1b5e20; }
+
+        footer {
+            background: #001e3c;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.95em;
+            font-weight: 300;
+            margin-top: 40px;
+        }
+        footer a { color: #61b329; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#projects">Research</a>
+        <a href="team.html" style="color: #61b329;">Team</a>
+        <a href="index.html#join">Join</a>
+        <a href="index.html#news">News</a>
+    </nav>
+
+    <div class="page-header">
+        <h1>Centre Team Directory</h1>
+        <p>Our collaborative research network spans seven higher education partner institutions across Ireland.</p>
+    </div>
+
+    <div class="container">
+
+        <div class="category-block">
+            <div class="category-title">Principal Investigators</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="Prof. Andrew Parnell">
+                    <h3>Prof. Andrew Parnell</h3>
+                    <p>University College Dublin</p>
+                    <span class="badge badge-pi">Lead PI</span>
+                </div>
+                
+                </div>
+        </div>
+
+        <div class="category-block">
+            <div class="category-title">Academic Supervisors</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="Supervisor Placeholder">
+                    <h3>Dr. Jane Doe</h3>
+                    <p>Trinity College Dublin</p>
+                    <span class="badge badge-sup">Supervisor</span>
+                </div>
+                
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="Supervisor Placeholder">
+                    <h3>Prof. John Smith</h3>
+                    <p>University College Cork</p>
+                    <span class="badge badge-sup">Supervisor</span>
+                </div>
+
+                </div>
+        </div>
+
+        <div class="category-block">
+            <div class="category-title">PhD iScholars</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="iScholar Placeholder">
+                    <h3>Alex Murphy</h3>
+                    <p>Dublin City University</p>
+                    <span class="badge badge-phd">PhD iScholar</span>
+                </div>
+                
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="iScholar Placeholder">
+                    <h3>S. Chakraborty</h3>
+                    <p>University College Dublin</p>
+                    <span class="badge badge-phd">PhD iScholar</span>
+                </div>
+
+                <div class="member-card">
+                    <img src="https://via.placeholder.com/150" alt="iScholar Placeholder">
+                    <h3>Kwame Mensah</h3>
+                    <p>Technological University Dublin</p>
+                    <span class="badge badge-phd">PhD iScholar</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Decarb-AI Centre. Supported by <a href="https://www.researchireland.ie" target="_blank" rel="noopener">Research Ireland</a> and <a href="https://aib.ie/" target="_blank" rel="noopener">AIB</a>.</p>
+    </footer>
+
+</body>
+</html>
