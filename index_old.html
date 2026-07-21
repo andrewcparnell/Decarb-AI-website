@@ -139,100 +139,32 @@
             margin-bottom: 25px;
         }
         
-        /* Interactive Expandable Research Cards */
-        .research-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Focus Area Grids */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
             margin-top: 35px;
         }
-
-        .expandable-card {
+        .card {
             background: #ffffff;
+            padding: 25px;
             border-radius: 6px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-            border-left: 4px solid #004b87;
-            overflow: hidden;
-            transition: all 0.2s ease;
+            border-top: 3px solid #004b87;
+            transition: transform 0.2s ease;
         }
-
-        .expandable-card:hover {
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-            border-left-color: #61b329;
+        .card:hover {
+            transform: translateY(-2px);
         }
-
-        .expandable-card summary {
-            padding: 22px 25px;
-            cursor: pointer;
+        .card h3 {
             font-size: 1.25em;
             font-weight: 500;
             color: #004b87;
-            list-style: none; /* Hide default disclosure triangle */
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
+            margin-top: 0;
+            margin-bottom: 12px;
         }
-
-        /* Hide standard marker in Webkit browsers */
-        .expandable-card summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .expandable-card summary h3 {
-            margin: 0 0 6px 0;
-            font-size: 1.15em;
-            font-weight: 500;
-            color: #004b87;
-            padding-right: 30px;
-        }
-
-        .expandable-card summary .card-teaser {
-            font-size: 0.75em;
-            font-weight: 350;
-            color: #556675;
-            margin: 0;
-        }
-
-        /* Custom toggle icon (+ / - indicator) */
-        .expandable-card summary::after {
-            content: "+";
-            position: absolute;
-            right: 25px;
-            top: 22px;
-            font-size: 1.4em;
-            line-height: 1;
-            color: #61b329;
-            font-weight: 400;
-            transition: transform 0.2s ease;
-        }
-
-        .expandable-card[open] summary::after {
-            content: "−";
-            color: #004b87;
-        }
-
-        /* Expanded content container & animation */
-        .expandable-card .expanded-content {
-            padding: 0 25px 25px 25px;
-            border-top: 1px solid #f0f4f8;
-            margin-top: 10px;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .expandable-card .expanded-content p {
-            margin-top: 18px;
-            margin-bottom: 0;
-            color: #334e68;
-            line-height: 1.8;
-            font-size: 0.98em;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        
         /* Enlarged Funder Logo Styles (approx 2x scaling) */
         .funders-section {
             margin-top: 55px;
@@ -349,7 +281,7 @@
         <a href="#projects">Research</a>
         <a href="#team">Team</a>
         <a href="#join">Join</a>
-        <a href="#news">News</a>
+        <!-- <a href="#news">News</a> -->
     </nav>
 
     <header id="home">
@@ -390,60 +322,29 @@
 
     <section id="projects" class="bg-light">
         <h2>Research Areas</h2>
-        <p>The iScholars’ research at the Decarb-AI research centre focuses on using cutting-edge AI to advance climate mitigation and adaptation across Ireland. Click on any research theme below to learn more about our specific focus areas:</p>
+        <p>The iScholars’ research at the Decarb-AI research centre focuses on using cutting-edge AI to advance climate mitigation and adaptation across Ireland. Key areas of scientific investigation include:</p>
         
-        <div class="research-container">
-            
-            <details class="expandable-card">
-                <summary>
-                    <h3>Energy & Infrastructure</h3>
-                    <p class="card-teaser">AI-optimised renewable energy systems and datacentre sustainability.</p>
-                </summary>
-                <div class="expanded-content">
-                    <p>Research within this stream investigates machine learning approaches for dynamic load balancing, grid integration of intermittent renewable sources (wind, solar), and thermal management systems for national data infrastructure. iScholars focus on high-dimensional predictive modeling to forecast grid surges and minimise curtailment losses across Ireland's energy network.</p>
-                </div>
-            </details>
-
-            <details class="expandable-card">
-                <summary>
-                    <h3>Environment & Ecology</h3>
-                    <p class="card-teaser">Machine learning frameworks for water quality forecasting and peatland restoration.</p>
-                </summary>
-                <div class="expanded-content">
-                    <p>This focus area leverages spatio-temporal AI models to monitor hydrological catchment health, predict agricultural runoff patterns, and evaluate carbon sequestration trajectories in restored peatlands. By integrating sensor networks with deep learning, researchers develop early-warning tools for ecological degradation and water source protection.</p>
-                </div>
-            </details>
-
-            <details class="expandable-card">
-                <summary>
-                    <h3>Land Use Systems</h3>
-                    <p class="card-teaser">Coupling earth-observation arrays and biodiversity modelling for data-driven land-use policy.</p>
-                </summary>
-                <div class="expanded-content">
-                    <p>Projects here synthesize high-resolution satellite remote sensing (Sentinel/Copernicus arrays) with computer vision to track real-time land cover changes, forestry carbon stocks, and ecosystem biodiversity metrics. The goal is to provide granular, objective spatial intelligence to guide regional agricultural policy and habitat restoration.</p>
-                </div>
-            </details>
-
-            <details class="expandable-card">
-                <summary>
-                    <h3>Sustainable Finance</h3>
-                    <p class="card-teaser">Designing sophisticated, AI-supported sustainable finance appraisal tools for SMEs.</p>
-                </summary>
-                <div class="expanded-content">
-                    <p>This stream addresses the data bottleneck in climate finance by creating NLP and machine learning pipelines that automate ESG risk assessments, green portfolio alignment, and transition risk scoring for small-to-medium enterprises. The research helps financial institutions deploy targeted capital toward verifiable decarbonisation efforts.</p>
-                </div>
-            </details>
-
-            <details class="expandable-card">
-                <summary>
-                    <h3>Decision Support</h3>
-                    <p class="card-teaser">Developing transparent, explainable AI decision-support systems for real-time decarbonisation planning.</p>
-                </summary>
-                <div class="expanded-content">
-                    <p>Focusing on Explainable AI (XAI) and multi-objective optimisation, this stream translates complex climate models into interpretable, interactive tools for local authorities and policymakers. Scholars design robust frameworks that balance socio-economic impacts, infrastructure costs, and emissions targets under uncertain climate scenarios.</p>
-                </div>
-            </details>
-
+        <div class="grid-container">
+            <div class="card">
+                <h3>Energy & Infrastructure</h3>
+                <p>AI-optimised renewable energy systems and datacentre sustainability.</p>
+            </div>
+            <div class="card">
+                <h3>Environment & Ecology</h3>
+                <p>Machine learning frameworks for water quality forecasting and peatland restoration.</p>
+            </div>
+            <div class="card">
+                <h3>Land Use Systems</h3>
+                <p>Coupling earth-observation arrays and biodiversity modelling for data-driven land-use policy.</p>
+            </div>
+            <div class="card">
+                <h3>Sustainable Finance</h3>
+                <p>Designing sophisticated, AI-supported sustainable finance appraisal tools for SMEs.</p>
+            </div>
+            <div class="card">
+                <h3>Decision Support</h3>
+                <p>Developing transparent, explainable AI decision-support systems for real-time decarbonisation planning.</p>
+            </div>
         </div>
     </section>
 
@@ -461,22 +362,27 @@
         <p>Decarb-AI will welcome 30 iScholars across three distinct recruitment intakes. Every researcher undertakes a fully-funded, four-year PhD under the guidance of established academic experts.</p>
         <p>Applications for our subsequent cohort of researchers are open to candidates displaying excellent quantitative backgrounds in AI, data science, engineering, environmental science, ecology, geography, finance, or related mathematical disciplines who aim to build high-impact computational tools for global climate resilience.</p>
         <p>Each iScholar receives an annual stipend or €31,000 with all university research fees covered. iScholars receive a generous travel and computing allowance.</p>
-        <p>All iScholars undertake a 3 month training scheme on AI, decacrbonisation, and high performance computing that runs from September to December in <a href="https://www.ucd.ie" target="_blank" rel="noopener" class="partner-link">University College Dublin</a>. </p>
         <div style="text-align: center; margin-top: 35px;">
             <a href="https://forms.gle/Bn5LxiefYXGehjqm8" class="btn-primary">Apply to Become an iScholar</a>
         </div>
     </section>
     
     <section id="news">
-        <!-- Juicer CSS requirement -->
-        <link href="https://www.juicer.io/embed/aimsir-centre/embed-code.css" media="all" rel="stylesheet" type="text/css" />
-
-        <h2>Latest Updates</h2>
-        <p>Follow our latest announcements, research highlights, and programme milestones directly from LinkedIn:</p>
-
-        <!-- Juicer Embed Code -->
-        <ul class="juicer-feed" data-feed-id="aimsir-centre" data-per="10"></ul>
-        <script type="text/javascript" src="https://www.juicer.io/embed/aimsir-centre/embed-code.js" async defer></script>
+        <!--
+        <h2>News & Events</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Inaugural Innovate for Ireland National Centre Launched</h3>
+                <p style="font-size:0.9em; color:#7f8c8d; margin-bottom:10px;"><strong>January 2026</strong></p>
+                <p>The Decarb-AI national centre has been officially announced. Our first eight iScholars—representing China, Ghana, India, the UK, France, Ireland, and Kenya—have formally commenced their climate-resilience research programmes.</p>
+            </div>
+            <div class="card">
+                <h3>Cohort II Application Cycle Opening</h3>
+                <p style="font-size:0.9em; color:#7f8c8d; margin-bottom:10px;"><strong>Forthcoming</strong></p>
+                <p>Key dates and structural application constraints for our next fully funded PhD intake windows will be posted here shortly.</p>
+            </div>
+        </div>
+        -->
     </section>
     
 
