@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Directory | Decarb-AI</title>
+    <link rel="icon" type="image/png" href="Logo3.png">
+    <style>
+        /* Shared core design system for visual parity with index.html */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+            line-height: 1.7;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Fixed Navigation (Single-word targets matching main page architecture) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 18px 0;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        nav a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #004b87;
+            font-weight: 500;
+            font-size: 1em;
+            transition: color 0.2s ease;
+        }
+        nav a:hover {
+            color: #61b329;
+        }
+
+        /* Context Sub-Header Banner with Parallax Background Image */
+        .page-header {
+            background-image: linear-gradient(rgba(0, 25, 50, 0.72), rgba(0, 25, 50, 0.72)), url('Picture 8.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: white;
+            padding: 150px 24px 80px 24px;
+            text-align: center;
+        }
+        
+        /* Mobile Fallback for Parallax Engine */
+        @media (pointer: coarse) {
+            .page-header {
+                background-attachment: scroll;
+            }
+        }
+
+        .page-header h1 {
+            font-weight: 300;
+            font-size: 2.6em;
+            margin: 0 0 12px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        .page-header p {
+            font-weight: 300;
+            color: #cbdbee;
+            margin: 0;
+            max-width: 720px;
+            margin: auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Instant Smooth-Scroll Navigation Cluster Styles */
+        .sub-nav-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .sub-nav-links a {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.2s ease;
+        }
+        .sub-nav-links a:hover {
+            background: #61b329;
+            color: #ffffff;
+            border-color: #61b329;
+            transform: translateY(-1px);
+        }
+
+        /* Container & Structural Grid Systems */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 24px;
+            box-sizing: border-box;
+        }
+        
+        .category-block {
+            margin-bottom: 70px;
+            scroll-margin-top: 90px; /* Generous top cushion to prevent fixed navbar overlapping sections */
+        }
+        
+        .category-title {
+            font-size: 1.6em;
+            font-weight: 400;
+            color: #004b87;
+            border-bottom: 2px solid #61b329;
+            padding-bottom: 8px;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        /* Compact, highly scalable profile layouts */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 35px;
+        }
+        .member-card {
+            background: #ffffff;
+            border: 1px solid #eef2f5;
+            border-radius: 6px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .member-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        
+        /* Unified Black and White Circular Cropping System */
+        .member-card img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f4f6f8;
+            margin-bottom: 18px;
+            border: 1px solid #eef2f5;
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+        
+        .member-card:hover img {
+            filter: grayscale(20%);
+            -webkit-filter: grayscale(20%);
+        }
+
+        .member-card h3 {
+            font-size: 1.15em;
+            font-weight: 500;
+            color: #004b87;
+            margin: 0 0 4px 0;
+        }
+        .member-card p {
+            font-size: 0.9em;
+            font-weight: 350;
+            color: #556675;
+            margin: 0 0 12px 0;
+            line-height: 1.4;
+        }
+        
+        /* Academic Profile Hyperlink Styling */
+        .profile-link {
+            display: inline-block;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: #004b87;
+            text-decoration: none;
+            border: 1px solid #d0daf0;
+            padding: 3px 14px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+        .profile-link:hover {
+            background: #004b87;
+            color: #ffffff;
+            border-color: #004b87;
+        }
+
+        .role-modifier {
+            display: block;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #61b329;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 4px;
+        }
+
+        footer {
+            background: #001e3c;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.95em;
+            font-weight: 300;
+            margin-top: 40px;
+        }
+        footer a { 
+            color: #61b329; 
+            text-decoration: none; 
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#projects">Research</a>
+        <a href="team.html" style="color: #61b329;">Team</a>
+        <a href="index.html#join">Join</a>
+        <!-- <a href="index.html#news">News</a> -->
+    </nav>
+
+    <div class="page-header">
+        <h1>Centre Team Directory</h1>
+        <p>Bringing together multidisciplinary researchers across seven primary higher education partner institutions in Ireland.</p>
+        
+        <div class="sub-nav-links">
+            <a href="#pis">Principal Investigators</a>
+            <a href="#supervisors">Academic Supervisors</a>
+            <a href="#scholars">PhD iScholars</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="category-block" id="pis">
+            <div class="category-title">Principal Investigators</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="photos/andrew_parnell.png" alt="Andrew Parnell">
+                    <h3>Andrew Parnell</h3>
+                    <span class="role-modifier">Director</span>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/andrew.parnell1" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/fiachra_oloughlin.png" alt="Fiachra O'Loughlin">
+                    <h3>Fiachra O'Loughlin</h3>
+                    <span class="role-modifier">Deputy Director</span>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/fiachra.oloughlin" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/fiona_regan.png" alt="Fiona Regan">
+                    <h3>Fiona Regan</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://www.dcu.ie/chemistry/people/fiona-regan" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/ian_donohue.png" alt="Ian Donohue">
+                    <h3>Ian Donohue</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/profiles/?profile=donohui" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/dympna_osullivan.png" alt="Dympna O'Sullivan">
+                    <h3>Dympna O'Sullivan</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/explore/faculties-and-schools/computing-digital-data/school-of-computer-science/people/academic-staff/dympna-osullivan.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/jean_odwyer.png" alt="Jean O'Dwyer">
+                    <h3>Jean O'Dwyer</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/en/bees/people/jeanodwyer/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/ken_byrne.png" alt="Ken Byrne">
+                    <h3>Ken Byrne</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://pure.ul.ie/en/persons/kenneth-byrne/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/venkatesh_kannan.png" alt="Venkatesh Kannan">
+                    <h3>Venkatesh Kannan</h3>
+                    <p>ICHEC</p>
+                    <a href="https://www.ichec.ie/staff/venkateshkannan" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="category-block" id="supervisors">
+            <div class="category-title">Academic Supervisors</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="photos/richard_nair.png" alt="Richard Nair">
+                    <h3>Richard Nair</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/botany/people/academic/nairri/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/matthew_saunders.png" alt="Matthew Saunders">
+                    <h3>Matthew Saunders</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/profiles/?profile=saundem" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/jin_zhao.png" alt="Jin Zhao">
+                    <h3>Jin Zhao</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/eleceng/people/academics/zhaoj6/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/emma_murphy.png" alt="Emma Murphy">
+                    <h3>Emma Murphy</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/explore/faculties-and-schools/computing-digital-data/school-of-computer-science/people/academic-staff/emma-murphy.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/ciara_ahern.png" alt="Ciara Ahern">
+                    <h3>Ciara Ahern</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/research-innovation/research/discover-our-research/research-centres/beric/people/academic-staff/ciara-ahern.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/antony_knights.png" alt="Antony Knights">
+                    <h3>Antony Knights</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/en/bees/staff/antonyknights/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/conor_sweeney.png" alt="Conor Sweeney">
+                    <h3>Conor Sweeney</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/conor.sweeney" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/abdollah_malekjafarian.png" alt="Abdollah Malekjafarian">
+                    <h3>Abdollah Malekjafarian</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/abdollah.malekjafarian" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/james_sweeney.png" alt="James Sweeney">
+                    <h3>James Sweeney</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://www.ul.ie/scieng/dr-james-sweeney" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="category-block" id="scholars">
+            <div class="category-title">PhD iScholars</div>
+            <div class="team-grid">
+                
+                <div class="member-card">
+                    <img src="photos/asrit_ganti.png" alt="Asrit Ganti">
+                    <h3>Asrit Ganti</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/yanfeng_wang.jpg" alt="Yanfeng Wang">
+                    <h3>Yanfeng Wang</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/purity_biwott.png" alt="Purity Biwott">
+                    <h3>Purity Biwott</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/Raja_Prabha_Poolpandy.png" alt="Raja Prabha Poolpandy">
+                    <h3>Raja Prabha Poolpandy</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/lainey_ward.png" alt="Lainey Ward">
+                    <h3>Lainey Ward</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/chantelle_amoako-atta.png" alt="Chantelle Amoako-Atta">
+                    <h3>Chantelle Amoako-Atta</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/lily_nobles.png" alt="Lily Nobles">
+                    <h3>Lily Nobles</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+                
+                <div class="member-card">
+                    <img src="photos/quentin_cordeau.png" alt="Quentin Cordeau">
+                    <h3>Quentin Cordeau</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://www.ul.ie/research" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Decarb-AI Centre. Supported by <a href="https://www.researchireland.ie" target="_blank" rel="noopener">Research Ireland</a> and <a href="https://aib.ie/" target="_blank" rel="noopener">AIB</a>.</p>
+    </footer>
+
+</body>
+</html>
