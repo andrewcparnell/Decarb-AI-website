@@ -439,17 +439,121 @@
         section > p { max-width: 760px; }
 
         /* ============ ABOUT ============ */
-        .about-columns {
-            column-count: 2;
-            column-gap: 52px;
-            margin-top: 40px;
+        .about-lead {
+            font-family: var(--font-display);
+            font-size: clamp(1.3em, 2.6vw, 1.8em);
+            line-height: 1.5;
+            color: var(--ink);
+            max-width: 920px;
+            margin: 0 0 64px;
         }
-        .about-columns p {
-            break-inside: avoid;
-            max-width: none;
+        .about-lead mark {
+            color: inherit;
+            background: linear-gradient(transparent 60%, rgba(87,179,123,.38) 60%) no-repeat;
+            background-size: 100% 100%;
         }
-        @media (max-width: 760px) {
-            .about-columns { column-count: 1; }
+        .about-lead mark.ember { background-image: linear-gradient(transparent 60%, rgba(219,154,68,.38) 60%); }
+        .about-lead.reveal-init mark { background-size: 0% 100%; transition: background-size 1s var(--ease); }
+        .about-lead.reveal-init.is-visible mark { background-size: 100% 100%; }
+        .about-lead mark:nth-of-type(2) { transition-delay: .35s; }
+        .about-lead mark:nth-of-type(3) { transition-delay: .7s; }
+        .about-lead mark:nth-of-type(4) { transition-delay: 1.05s; }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 56px;
+            align-items: center;
+            margin-bottom: 90px;
+        }
+        .partner-diagram {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 22px 22px 18px;
+            box-shadow: 0 20px 50px rgba(16,42,36,.06);
+        }
+        .partner-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+        .d-node { cursor: pointer; outline: none; transition: opacity .3s ease; }
+        .d-node .node-ring { fill: none; stroke-width: 2; stroke-opacity: 0; transition: stroke-opacity .3s ease; }
+        .d-node:hover .node-ring, .d-node:focus-visible .node-ring, .d-node.on .node-ring { stroke-opacity: .9; }
+        .d-path, .d-pulse { transition: opacity .3s ease; }
+        .partner-diagram.focusing [data-links]:not(.on) { opacity: .18; }
+        .d-label { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; fill: var(--text-muted); }
+        .diagram-caption {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            min-height: 4.6em;
+            margin: 14px 4px 0;
+            padding-top: 14px;
+            border-top: 1px solid var(--paper-dim);
+            font-size: .9em;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+        .diagram-caption strong { color: var(--ink); font-weight: 600; }
+        .diagram-caption .swatch { flex: 0 0 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: var(--moss-bright); transition: background .3s ease; }
+        .about-copy h3 { font-size: 1.5em; color: var(--ink); margin: 0 0 16px; line-height: 1.25; }
+        .about-copy p { color: var(--text-muted); }
+        .about-copy .hint {
+            font-family: var(--font-mono);
+            font-size: .74em;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--moss);
+        }
+
+        .journey { position: relative; max-width: 860px; margin: 0 auto; padding-left: 70px; }
+        .journey-line { position: absolute; left: 22px; top: 10px; bottom: 30px; width: 2px; background: var(--line); }
+        .journey-line::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(var(--moss-bright), var(--ember));
+            transform-origin: top;
+            transform: scaleY(var(--progress, 1));
+        }
+        .journey-step { position: relative; padding-bottom: 46px; transition: opacity .5s ease, transform .5s var(--ease); }
+        .journey-step:last-child { padding-bottom: 0; }
+        .journey.js .journey-step { opacity: .32; transform: translateX(12px); }
+        .journey.js .journey-step.is-active { opacity: 1; transform: none; }
+        .journey-dot {
+            position: absolute;
+            left: -70px;
+            top: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--moss);
+            border: 2px solid var(--moss);
+            color: var(--white);
+            transition: background .4s ease, border-color .4s ease, color .4s ease, box-shadow .4s ease;
+        }
+        .journey-dot svg { width: 20px; height: 20px; }
+        .journey.js .journey-step:not(.is-active) .journey-dot { background: var(--paper); border-color: var(--line); color: var(--text-muted); }
+        .journey-step.is-active .journey-dot { box-shadow: 0 0 0 7px rgba(87,179,123,.18); }
+        .journey-kicker {
+            font-family: var(--font-mono);
+            font-size: .72em;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--moss);
+        }
+        .journey-step h3 { margin: 4px 0 8px; font-size: 1.3em; color: var(--ink); line-height: 1.25; }
+        .journey-step p { color: var(--text-muted); margin: 0; max-width: 680px; }
+
+        @media (max-width: 860px) {
+            .about-grid { grid-template-columns: 1fr; gap: 34px; }
+        }
+        @media (max-width: 600px) {
+            .journey { padding-left: 56px; }
+            .journey-line { left: 18px; }
+            .journey-dot { left: -56px; width: 38px; height: 38px; }
+            .journey-dot svg { width: 17px; height: 17px; }
         }
 
         .funders-section {
@@ -854,15 +958,97 @@
             <h2>About Decarb-AI</h2>
         </div>
 
-        <div class="about-columns reveal-target">
-            <p>Innovate for Ireland is a global scholarship programme that brings together exceptional talent, ambitious industry partners, and a future-focused nation to tackle some of the world’s greatest challenges.</p>
-            <p>Unique among international scholarship programmes, Innovate for Ireland supports advanced PhD research focused on sustainability, innovation, and societal impact.</p>
-            <p>Established through a partnership between the Irish Government and the private sector, the programme takes a progressive approach to doctoral education by attracting, developing, and retaining world-class PhD researchers across higher education institutions throughout the island of Ireland.</p>
-            <p>These researchers — known as iScholars — undertake challenge-based research aligned with national priority areas, with a strong emphasis on sustainability, innovation, and entrepreneurial leadership to help address the world’s most pressing issues.</p>
+        <p class="about-lead reveal-target"><b>Decarb-AI: AI-Powered Pathways to Climate Resilience</b> is the <mark>first Innovate for Ireland National Centre</mark>, bringing together <mark class="ember">exceptional talent</mark>, <mark>ambitious industry partners</mark> and a <mark class="ember">future-focused nation</mark> to accelerate Ireland’s transition to a climate-resilient, low-carbon future.</p>
 
-            <p>The first Innovate for Ireland National Centre, <b>Decarb-AI: AI-Powered Pathways to Climate Resilience</b>, represents a major milestone for the programme.</p>
-            <p>Established in partnership with AIB and Research Ireland, the Decarb-AI Centre aims to harness the power of artificial intelligence to accelerate Ireland’s transition to a climate-resilient, low-carbon future.</p>
-            <p>By combining cutting-edge AI research with real-world climate challenges, Decarb-AI seeks to develop solutions that are scientifically rigorous, commercially relevant, and capable of delivering meaningful national and global impact.</p>
+        <div class="about-grid">
+            <div class="partner-diagram reveal-target">
+        <svg viewBox="0 0 520 345" role="img" aria-label="Diagram: iScholars, AIB and Research Ireland feed into the Decarb-AI National Centre, which works towards a climate-resilient, low-carbon Ireland">
+            <path class="d-path" data-links="talent hub" d="M102 70 C190 70 210 175 250 175" fill="none" stroke="#DB9A44" stroke-opacity=".4" stroke-width="2.5"/>
+            <circle class="d-pulse" data-links="talent hub" r="4.5" fill="#DB9A44"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M102 70 C190 70 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="talent hub" r="4.5" fill="#DB9A44"><animateMotion dur="2.4s" begin="-0.8s" repeatCount="indefinite" path="M102 70 C190 70 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="talent hub" r="4.5" fill="#DB9A44"><animateMotion dur="2.4s" begin="-1.6s" repeatCount="indefinite" path="M102 70 C190 70 210 175 250 175"/></circle>
+            <path class="d-path" data-links="industry hub" d="M102 175 C190 175 210 175 250 175" fill="none" stroke="#3FA7B3" stroke-opacity=".4" stroke-width="2.5"/>
+            <circle class="d-pulse" data-links="industry hub" r="4.5" fill="#3FA7B3"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M102 175 C190 175 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="industry hub" r="4.5" fill="#3FA7B3"><animateMotion dur="2.4s" begin="-0.8s" repeatCount="indefinite" path="M102 175 C190 175 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="industry hub" r="4.5" fill="#3FA7B3"><animateMotion dur="2.4s" begin="-1.6s" repeatCount="indefinite" path="M102 175 C190 175 210 175 250 175"/></circle>
+            <path class="d-path" data-links="gov hub" d="M102 280 C190 280 210 175 250 175" fill="none" stroke="#8C7BD6" stroke-opacity=".4" stroke-width="2.5"/>
+            <circle class="d-pulse" data-links="gov hub" r="4.5" fill="#8C7BD6"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M102 280 C190 280 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="gov hub" r="4.5" fill="#8C7BD6"><animateMotion dur="2.4s" begin="-0.8s" repeatCount="indefinite" path="M102 280 C190 280 210 175 250 175"/></circle>
+            <circle class="d-pulse" data-links="gov hub" r="4.5" fill="#8C7BD6"><animateMotion dur="2.4s" begin="-1.6s" repeatCount="indefinite" path="M102 280 C190 280 210 175 250 175"/></circle>
+            <g class="d-node" data-key="talent" data-links="talent" tabindex="0" role="button" aria-label="iScholars">
+            <circle class="node-ring" cx="70" cy="70" r="38" stroke="#DB9A44"/>
+            <circle cx="70" cy="70" r="30" fill="#DB9A44"/>
+            <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="70" cy="64" r="6"/><path d="M59 82 a11 9 0 0 1 22 0"/></g>
+            <text x="70" y="122" text-anchor="middle" class="d-label">iSCHOLARS</text>
+        </g>
+            <g class="d-node" data-key="industry" data-links="industry" tabindex="0" role="button" aria-label="AIB">
+            <circle class="node-ring" cx="70" cy="175" r="38" stroke="#3FA7B3"/>
+            <circle cx="70" cy="175" r="30" fill="#3FA7B3"/>
+            <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="59" y="170" width="22" height="15" rx="2.5"/><path d="M66 170 v-4 h8 v4 M59 177 h22"/></g>
+            <text x="70" y="227" text-anchor="middle" class="d-label">AIB</text>
+        </g>
+            <g class="d-node" data-key="gov" data-links="gov" tabindex="0" role="button" aria-label="Research Ireland">
+            <circle class="node-ring" cx="70" cy="280" r="38" stroke="#8C7BD6"/>
+            <circle cx="70" cy="280" r="30" fill="#8C7BD6"/>
+            <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M58 277 L70 269 L82 277 Z M58 291 h24 M62 288 v-9 M67 288 v-9 M73 288 v-9 M78 288 v-9"/></g>
+            <text x="70" y="332" text-anchor="middle" class="d-label">RESEARCH IRELAND</text>
+        </g>
+            <path class="d-path" data-links="impact hub" d="M350 175 C380 175 400 175 410 175" fill="none" stroke="#57B37B" stroke-opacity=".5" stroke-width="3"/>
+            <circle class="d-pulse" data-links="impact hub" r="5" fill="#57B37B"><animateMotion dur="1.8s" begin="0s" repeatCount="indefinite" path="M350 175 C380 175 400 175 410 175"/></circle>
+            <circle class="d-pulse" data-links="impact hub" r="5" fill="#57B37B"><animateMotion dur="1.8s" begin="-0.6s" repeatCount="indefinite" path="M350 175 C380 175 400 175 410 175"/></circle>
+            <circle class="d-pulse" data-links="impact hub" r="5" fill="#57B37B"><animateMotion dur="1.8s" begin="-1.2s" repeatCount="indefinite" path="M350 175 C380 175 400 175 410 175"/></circle>
+            <g class="d-node" data-key="hub" data-links="hub talent industry gov impact" tabindex="0" role="button" aria-label="Decarb-AI">
+            <circle class="node-ring" cx="300" cy="175" r="66" stroke="#57B37B"/>
+            <circle cx="300" cy="175" r="58" fill="none" stroke="#57B37B" stroke-width="1.5" stroke-dasharray="4 7" class="spin-slow" style="transform-origin:300px 175px"/>
+            <g class="spin" style="transform-origin:300px 175px;animation-duration:9s"><circle cx="300" cy="117" r="4" fill="#DB9A44"/><circle cx="300" cy="233" r="3" fill="#57B37B"/></g>
+            <circle cx="300" cy="175" r="48" fill="#102A24"/>
+            <text x="300" y="181" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="17" font-weight="600" fill="#fff">Decarb<tspan fill="#57B37B">·AI</tspan></text>
+            <text x="300" y="257" text-anchor="middle" class="d-label">NATIONAL CENTRE</text>
+        </g>
+            <g class="d-node" data-key="impact" data-links="impact" tabindex="0" role="button" aria-label="The goal">
+            <circle cx="450" cy="175" r="36" fill="none" stroke="#57B37B" stroke-width="1.5"><animate attributeName="r" values="36;60" dur="2.8s" begin="0s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="2.8s" begin="0s" repeatCount="indefinite"/></circle><circle cx="450" cy="175" r="36" fill="none" stroke="#57B37B" stroke-width="1.5"><animate attributeName="r" values="36;60" dur="2.8s" begin="-1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="2.8s" begin="-1.4s" repeatCount="indefinite"/></circle>
+            <circle class="node-ring" cx="450" cy="175" r="44" stroke="#57B37B"/>
+            <circle cx="450" cy="175" r="36" fill="#57B37B"/>
+            <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M440 185 C440 169 452 163 462 163 C462 177 456 185 440 185 Z M440 185 L454 171"/></g>
+            <text x="450" y="237" text-anchor="middle" class="d-label">LOW-CARBON IRELAND</text>
+        </g>
+        </svg>
+                <p class="diagram-caption" aria-live="polite"><span class="swatch" style="background:#57B37B"></span><span><strong>Decarb-AI</strong>: the first Innovate for Ireland National Centre, uniting seven Irish institutions around AI for climate.</span></p>
+            </div>
+            <div class="about-copy reveal-target">
+                <h3>A major milestone for Innovate for Ireland</h3>
+                <p>Established in partnership with AIB and Research Ireland, the Decarb-AI Centre aims to harness the power of artificial intelligence to accelerate Ireland’s transition to a climate-resilient, low-carbon future.</p>
+                <p>Researchers, industry and government each bring something different, and the Centre is where they meet.</p>
+                <p class="hint">Hover or tap the diagram to explore &rarr;</p>
+            </div>
+        </div>
+
+        <div class="journey">
+            <div class="journey-line" aria-hidden="true"></div>
+            <div class="journey-step">
+                <span class="journey-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span>
+                <div class="journey-kicker">01 &middot; The programme</div>
+                <h3>A global scholarship programme</h3>
+                <p>Innovate for Ireland brings together exceptional talent, ambitious industry partners, and a future-focused nation to tackle some of the world’s greatest challenges. Unique among international scholarship programmes, it supports advanced PhD research focused on sustainability, innovation, and societal impact.</p>
+            </div>
+            <div class="journey-step">
+                <span class="journey-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-4 5 3 5-3 4 4"/><path d="M7 8v6l5 4 5-4V8"/></svg></span>
+                <div class="journey-kicker">02 &middot; The partnership</div>
+                <h3>Government and industry, side by side</h3>
+                <p>Established through a partnership between the Irish Government and the private sector, the programme takes a progressive approach to doctoral education, attracting, developing, and retaining world-class PhD researchers across higher education institutions throughout the island of Ireland.</p>
+            </div>
+            <div class="journey-step">
+                <span class="journey-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v5M12 17v5M2 12h5M17 12h5M5 5l3.5 3.5M15.5 15.5 19 19M19 5l-3.5 3.5M8.5 15.5 5 19"/></svg></span>
+                <div class="journey-kicker">03 &middot; The iScholars</div>
+                <h3>Challenge-based research</h3>
+                <p>Our researchers, known as iScholars, undertake challenge-based research aligned with national priority areas, with a strong emphasis on sustainability, innovation, and entrepreneurial leadership to help address the world’s most pressing issues.</p>
+            </div>
+            <div class="journey-step">
+                <span class="journey-dot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span>
+                <div class="journey-kicker">04 &middot; The impact</div>
+                <h3>Rigorous, relevant, real-world</h3>
+                <p>By combining cutting-edge AI research with real-world climate challenges, Decarb-AI seeks to develop solutions that are scientifically rigorous, commercially relevant, and capable of delivering meaningful national and global impact.</p>
+            </div>
         </div>
 
         <div class="funders-section reveal-target">
@@ -1283,6 +1469,87 @@
                 mouse = { x: e.clientX - rect.left, y: e.clientY - rect.top };
             });
             header.addEventListener('pointerleave', function () { mouse = null; });
+        })();
+
+        // About: partnership diagram captions (auto-cycles until someone
+        // interacts) and a journey line that fills as you scroll.
+        (function () {
+            var diagram = document.querySelector('.partner-diagram');
+            if (!diagram) return;
+            var captions = {"talent": ["#DB9A44", "iScholars", "exceptional PhD researchers recruited from around the world to undertake challenge-based research."], "industry": ["#3FA7B3", "AIB", "an ambitious industry partner helping to establish the Centre and keep its research commercially relevant."], "gov": ["#8C7BD6", "Research Ireland", "national investment from a future-focused nation in sustainability, innovation and societal impact."], "hub": ["#57B37B", "Decarb-AI", "the first Innovate for Ireland National Centre, uniting seven Irish institutions around AI for climate."], "impact": ["#57B37B", "The goal", "a climate-resilient, low-carbon Ireland, with solutions that deliver meaningful national and global impact."]};
+            var order = ['talent', 'industry', 'gov', 'hub', 'impact'];
+            var caption = diagram.querySelector('.diagram-caption');
+            var linked = diagram.querySelectorAll('[data-links]');
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var cycleIndex = 0, timer = null, userTook = false, inView = false;
+
+            function show(key) {
+                var c = captions[key];
+                diagram.classList.add('focusing');
+                linked.forEach(function (el) {
+                    el.classList.toggle('on', el.getAttribute('data-links').split(' ').indexOf(key) !== -1);
+                });
+                caption.innerHTML = '<span class="swatch" style="background:' + c[0] + '"></span><span><strong>' + c[1] + '</strong>: ' + c[2] + '</span>';
+            }
+            function clear() {
+                diagram.classList.remove('focusing');
+                linked.forEach(function (el) { el.classList.remove('on'); });
+            }
+            function tick() {
+                show(order[cycleIndex]);
+                cycleIndex = (cycleIndex + 1) % order.length;
+            }
+            function startCycle() {
+                if (timer || userTook || reduceMotion || !inView) return;
+                tick();
+                timer = setInterval(tick, 3800);
+            }
+            function stopCycle() { clearInterval(timer); timer = null; }
+
+            diagram.querySelectorAll('.d-node').forEach(function (node) {
+                var key = node.getAttribute('data-key');
+                function take() { userTook = true; stopCycle(); show(key); }
+                node.addEventListener('pointerenter', take);
+                node.addEventListener('focus', take);
+                node.addEventListener('click', take);
+                node.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); take(); }
+                });
+            });
+            diagram.querySelector('svg').addEventListener('pointerleave', function () { if (userTook) clear(); });
+
+            if (reduceMotion) {
+                diagram.querySelector('svg').pauseAnimations();
+            } else {
+                new IntersectionObserver(function (entries) {
+                    inView = entries[0].isIntersecting;
+                    inView ? startCycle() : stopCycle();
+                }, { threshold: 0.4 }).observe(diagram);
+            }
+        })();
+
+        (function () {
+            var journey = document.querySelector('.journey');
+            if (!journey || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            var steps = journey.querySelectorAll('.journey-step');
+            var queued = false;
+            journey.classList.add('js');
+            function update() {
+                queued = false;
+                var mark = window.innerHeight * 0.62;
+                var rect = journey.getBoundingClientRect();
+                var progress = Math.min(1, Math.max(0, (mark - rect.top) / rect.height));
+                journey.style.setProperty('--progress', progress.toFixed(3));
+                steps.forEach(function (step) {
+                    step.classList.toggle('is-active', step.getBoundingClientRect().top < mark);
+                });
+            }
+            function onScroll() {
+                if (!queued) { queued = true; requestAnimationFrame(update); }
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            update();
         })();
 
         // Research explorer: tabs auto-advance (progress bar on the active tab)
