@@ -798,16 +798,190 @@
             .panel-body { padding: 26px 22px; }
         }
 
-        /* ============ TEAM TEASER ============ */
-        .team-teaser-panel {
+        /* ============ TEAM SPOTLIGHT ============ */
+        .team-grid-home {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 28px;
+            align-items: stretch;
+        }
+        .spotlight {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(90% 70% at 0% 0%, color-mix(in srgb, var(--accent, #57B37B) 22%, transparent) 0%, transparent 65%),
+                var(--white);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 28px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            transition: background .6s ease;
+        }
+        .spot-slides { flex: 1; }
+        #team .team-intro { margin: -14px 0 34px; }
+        .spot-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+        .spot-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-mono);
+            font-size: .72em;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--moss);
+        }
+        .spot-kicker::before {
+            content: '';
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent, var(--moss-bright));
+            box-shadow: 0 0 0 0 var(--accent, var(--moss-bright));
+            animation: live 2s ease-out infinite;
+        }
+        @keyframes live { 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+        .spot-controls { display: flex; align-items: center; gap: 10px; }
+        .spot-count { font-family: var(--font-mono); font-size: .75em; color: var(--text-muted); min-width: 52px; text-align: center; }
+        .spot-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--line);
+            background: var(--white);
+            color: var(--ink);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .2s var(--ease);
+        }
+        .spot-btn:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+        .spot-btn svg { width: 16px; height: 16px; }
+        .spot-slide { display: grid; grid-template-columns: 150px 1fr; gap: 28px; align-items: start; }
+        .spot-slide[hidden] { display: none; }
+        .spot-photo { position: relative; width: 150px; height: 150px; }
+        .spot-photo img {
+            position: absolute;
+            inset: 10px;
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            animation: spot-pop .7s var(--ease);
+        }
+        .spot-photo svg { position: absolute; inset: 0; width: 150px; height: 150px; animation: spin 18s linear infinite; }
+        @keyframes spot-pop { from { opacity: 0; transform: scale(.85) rotate(-6deg); } to { opacity: 1; transform: none; } }
+        .spot-body > * { opacity: 0; transform: translateY(10px); animation: spot-line .55s var(--ease) forwards; }
+        .spot-body > :nth-child(2) { animation-delay: .06s; }
+        .spot-body > :nth-child(3) { animation-delay: .12s; }
+        .spot-body > :nth-child(4) { animation-delay: .18s; }
+        .spot-body > :nth-child(5) { animation-delay: .24s; }
+        .spot-body > :nth-child(6) { animation-delay: .3s; }
+        @keyframes spot-line { to { opacity: 1; transform: none; } }
+        .spot-theme {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: .68em;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            background: color-mix(in srgb, var(--accent) 45%, white);
+            padding: 3px 12px;
+            border-radius: 999px;
+        }
+        .spot-body h3 { font-size: 1.5em; color: var(--ink); margin: 10px 0 2px; line-height: 1.2; }
+        #team .spot-meta { font-size: .85em; color: var(--text-muted); margin: 0 0 14px; }
+        #team .spot-project { font-family: var(--font-display); font-size: 1.08em; font-weight: 500; color: var(--moss); line-height: 1.35; margin: 0 0 10px; }
+        #team .spot-blurb { font-size: .93em; color: var(--text); line-height: 1.65; margin: 0 0 12px; }
+        #team .spot-sup { font-family: var(--font-mono); font-size: .72em; letter-spacing: .04em; color: var(--text-muted); margin: 0; }
+        .spot-dots { display: flex; gap: 6px; margin-top: 24px; }
+        .spot-dot {
+            position: relative;
+            flex: 1;
+            height: 4px;
+            padding: 0;
+            border: none;
+            border-radius: 2px;
+            background: var(--paper-dim);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .spot-dot::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ink-soft);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        .spot-dot.done::after, .spot-dot[aria-current="true"]::after { transform: scaleX(1); }
+        .spotlight.autoplay .spot-dot[aria-current="true"]::after { transform: scaleX(0); animation: tab-progress 7s linear forwards; }
+        .spotlight.paused .spot-dot::after { animation-play-state: paused !important; }
+
+        .team-side {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
             background: var(--white);
             border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 48px;
-            margin-top: 16px;
+            border-radius: 20px;
+            padding: 28px 30px 30px;
         }
-        @media (max-width: 600px) {
-            .team-teaser-panel { padding: 30px 24px; }
+        .photo-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+            gap: 6px;
+        }
+        .photo-wall a {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--paper-dim);
+            transition: transform .25s var(--ease), box-shadow .25s ease;
+        }
+        .photo-wall img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(100%);
+            opacity: .85;
+            transition: filter .4s ease, opacity .4s ease;
+        }
+        .photo-wall a:hover, .photo-wall a.lit { transform: scale(1.22); z-index: 2; box-shadow: 0 6px 16px rgba(16,42,36,.22); }
+        .photo-wall a:hover img, .photo-wall a.lit img { filter: none; opacity: 1; }
+        .photo-wall.reveal-init a { opacity: 0; transform: scale(.4); }
+        .photo-wall.reveal-init.is-visible a { opacity: 1; transform: none; transition: opacity .5s ease var(--d), transform .5s var(--ease) var(--d); }
+        .team-counts { display: flex; gap: 0; border-top: 1px solid var(--paper-dim); padding-top: 18px; }
+        .team-counts div { flex: 1; text-align: center; border-left: 1px solid var(--paper-dim); }
+        .team-counts div:first-child { border-left: none; }
+        .team-counts strong { display: block; font-family: var(--font-display); font-size: 1.7em; font-weight: 500; color: var(--ink); line-height: 1.1; }
+        .team-counts span { font-family: var(--font-mono); font-size: .64em; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+        .btn-explore {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: var(--white);
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .25s ease, transform .25s var(--ease);
+        }
+        .btn-explore svg { width: 18px; height: 18px; transition: transform .25s var(--ease); }
+        .btn-explore:hover { background: var(--moss); transform: translateY(-2px); }
+        .btn-explore:hover svg { transform: translateX(5px); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spot-photo img, .spot-photo svg, .spot-body > *, .spot-kicker::before { animation: none !important; opacity: 1; transform: none; }
+        }
+        @media (max-width: 900px) {
+            .team-grid-home { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 560px) {
+            .spotlight, .team-side { padding: 22px 20px 24px; }
+            .spot-slide { grid-template-columns: 1fr; gap: 16px; }
+            .spot-photo { width: 120px; height: 120px; }
+            .spot-photo img { width: 104px; height: 104px; inset: 8px; }
+            .spot-photo svg { width: 120px; height: 120px; }
         }
 
         /* ============ BUTTONS ============ */
@@ -1133,7 +1307,7 @@
                         <p>Research within this stream investigates machine learning approaches for dynamic load balancing, grid integration of intermittent renewable sources (wind, solar), and thermal management systems for national data infrastructure. iScholars focus on high-dimensional predictive modelling to forecast grid surges and minimise curtailment losses across Ireland's energy network.</p>
                         <ul class="chips"><li>Load forecasting</li><li>Grid integration</li><li>Wind &amp; solar</li><li>Curtailment</li><li>Data-centre cooling</li></ul>
                         <span class="people-label">Some of the people in this area</span>
-                        <div class="avatars"><a href="team.html" title="Conor Sweeney" aria-label="Conor Sweeney"><img src="photos/thumbs/conor_sweeney.jpg" alt="" loading="lazy"></a><a href="team.html" title="Abdollah Malekjafarian" aria-label="Abdollah Malekjafarian"><img src="photos/thumbs/abdollah_malekjafarian.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ciara Ahern" aria-label="Ciara Ahern"><img src="photos/thumbs/ciara_ahern.jpg" alt="" loading="lazy"></a><a href="team.html" title="Yanfeng Wang" aria-label="Yanfeng Wang"><img src="photos/thumbs/yanfeng_wang.jpg" alt="" loading="lazy"></a><a href="team.html" title="Muhammad Intizar Ali" aria-label="Muhammad Intizar Ali"><img src="photos/thumbs/ali_intizar.jpg" alt="" loading="lazy"></a></div>
+                        <div class="avatars"><a href="team.html" title="Andrew Parnell" aria-label="Andrew Parnell"><img src="photos/thumbs/andrew_parnell.jpg" alt="" loading="lazy"></a><a href="team.html" title="Abdollah Malekjafarian" aria-label="Abdollah Malekjafarian"><img src="photos/thumbs/abdollah_malekjafarian.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jin Zhao" aria-label="Jin Zhao"><img src="photos/thumbs/jin_zhao.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ciara Ahern" aria-label="Ciara Ahern"><img src="photos/thumbs/ciara_ahern.jpg" alt="" loading="lazy"></a><a href="team.html" title="Chantelle Amoako-Atta" aria-label="Chantelle Amoako-Atta"><img src="photos/thumbs/chantelle_amoako-atta.jpg" alt="" loading="lazy"></a><a href="team.html" title="Yanfeng Wang" aria-label="Yanfeng Wang"><img src="photos/thumbs/yanfeng_wang.jpg" alt="" loading="lazy"></a><a href="team.html" title="Raja Prabha Poolpandy" aria-label="Raja Prabha Poolpandy"><img src="photos/thumbs/raja_prabha_poolpandy.jpg" alt="" loading="lazy"></a></div>
                     </div>
                 </article>
                 <article class="theme-panel" role="tabpanel" id="panel-environment" aria-labelledby="tab-environment" style="--accent:#4FB8C4" hidden>
@@ -1173,7 +1347,7 @@
                         <p>This focus area leverages spatio-temporal AI models to monitor hydrological catchment health, predict agricultural runoff patterns, and evaluate carbon sequestration trajectories in restored peatlands. By integrating sensor networks with deep learning, researchers develop early-warning tools for ecological degradation and water source protection.</p>
                         <ul class="chips"><li>Water quality</li><li>Sensor networks</li><li>Peatland carbon</li><li>Ecosystem stability</li><li>Early warning</li></ul>
                         <span class="people-label">Some of the people in this area</span>
-                        <div class="avatars"><a href="team.html" title="Fiona Regan" aria-label="Fiona Regan"><img src="photos/thumbs/fiona_regan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jenny Lawler" aria-label="Jenny Lawler"><img src="photos/thumbs/jenny_lawler.jpg" alt="" loading="lazy"></a><a href="team.html" title="Matthew Saunders" aria-label="Matthew Saunders"><img src="photos/thumbs/matthew_saunders.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ken Byrne" aria-label="Ken Byrne"><img src="photos/thumbs/ken_byrne.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ian Donohue" aria-label="Ian Donohue"><img src="photos/thumbs/ian_donohue.jpg" alt="" loading="lazy"></a><a href="team.html" title="Reza Sarkhosh" aria-label="Reza Sarkhosh"><img src="photos/thumbs/reza_sarkhosh.jpg" alt="" loading="lazy"></a><a href="team.html" title="Kalpana Thalangama Appuhamilage" aria-label="Kalpana Thalangama Appuhamilage"><img src="photos/thumbs/kalpana_thalangama_appuhamilage.jpg" alt="" loading="lazy"></a><a href="team.html" title="Shae Tjong" aria-label="Shae Tjong"><img src="photos/thumbs/shae_tjong.jpg" alt="" loading="lazy"></a></div>
+                        <div class="avatars"><a href="team.html" title="Fiachra O&#x27;Loughlin" aria-label="Fiachra O&#x27;Loughlin"><img src="photos/thumbs/fiachra_oloughlin.jpg" alt="" loading="lazy"></a><a href="team.html" title="Conor Sweeney" aria-label="Conor Sweeney"><img src="photos/thumbs/conor_sweeney.jpg" alt="" loading="lazy"></a><a href="team.html" title="Richard Nair" aria-label="Richard Nair"><img src="photos/thumbs/richard_nair.jpg" alt="" loading="lazy"></a><a href="team.html" title="Matthew Saunders" aria-label="Matthew Saunders"><img src="photos/thumbs/matthew_saunders.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ian Donohue" aria-label="Ian Donohue"><img src="photos/thumbs/ian_donohue.jpg" alt="" loading="lazy"></a><a href="team.html" title="Fiona Regan" aria-label="Fiona Regan"><img src="photos/thumbs/fiona_regan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jenny Lawler" aria-label="Jenny Lawler"><img src="photos/thumbs/jenny_lawler.jpg" alt="" loading="lazy"></a><a href="team.html" title="Muhammad Intizar Ali" aria-label="Muhammad Intizar Ali"><img src="photos/thumbs/ali_intizar.jpg" alt="" loading="lazy"></a><a href="team.html" title="Lainey Ward" aria-label="Lainey Ward"><img src="photos/thumbs/lainey_ward.jpg" alt="" loading="lazy"></a><a href="team.html" title="Asrit Ganti" aria-label="Asrit Ganti"><img src="photos/thumbs/asrit_ganti.jpg" alt="" loading="lazy"></a><a href="team.html" title="Reza Sarkhosh" aria-label="Reza Sarkhosh"><img src="photos/thumbs/reza_sarkhosh.jpg" alt="" loading="lazy"></a><a href="team.html" title="Shae Tjong" aria-label="Shae Tjong"><img src="photos/thumbs/shae_tjong.jpg" alt="" loading="lazy"></a><a href="team.html" title="Kalpana Thalangama Appuhamilage" aria-label="Kalpana Thalangama Appuhamilage"><img src="photos/thumbs/kalpana_thalangama_appuhamilage.jpg" alt="" loading="lazy"></a></div>
                     </div>
                 </article>
                 <article class="theme-panel" role="tabpanel" id="panel-land" aria-labelledby="tab-land" style="--accent:#6CC77A" hidden>
@@ -1201,7 +1375,7 @@
                         <p>Projects here synthesise high-resolution satellite remote sensing (Sentinel/Copernicus arrays) with computer vision to track real-time land cover changes, forestry carbon stocks, and ecosystem biodiversity metrics. The goal is to provide granular, objective spatial intelligence to guide regional agricultural policy and habitat restoration.</p>
                         <ul class="chips"><li>Earth observation</li><li>Computer vision</li><li>Forest carbon</li><li>Land cover</li><li>Biodiversity</li></ul>
                         <span class="people-label">Some of the people in this area</span>
-                        <div class="avatars"><a href="team.html" title="Fiachra O&#x27;Loughlin" aria-label="Fiachra O&#x27;Loughlin"><img src="photos/thumbs/fiachra_oloughlin.jpg" alt="" loading="lazy"></a><a href="team.html" title="Markus Eichhorn" aria-label="Markus Eichhorn"><img src="photos/thumbs/markus_eichhorn.jpg" alt="" loading="lazy"></a><a href="team.html" title="Soumyabrata Dev" aria-label="Soumyabrata Dev"><img src="photos/thumbs/soumyabrata_dev.jpg" alt="" loading="lazy"></a><a href="team.html" title="Chantelle Amoako-Atta" aria-label="Chantelle Amoako-Atta"><img src="photos/thumbs/chantelle_amoako-atta.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ijlal Haidar" aria-label="Ijlal Haidar"><img src="photos/thumbs/ijlal_haidar.jpg" alt="" loading="lazy"></a></div>
+                        <div class="avatars"><a href="team.html" title="James Sweeney" aria-label="James Sweeney"><img src="photos/thumbs/james_sweeney.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ken Byrne" aria-label="Ken Byrne"><img src="photos/thumbs/ken_byrne.jpg" alt="" loading="lazy"></a><a href="team.html" title="Markus Eichhorn" aria-label="Markus Eichhorn"><img src="photos/thumbs/markus_eichhorn.jpg" alt="" loading="lazy"></a><a href="team.html" title="Soumyabrata Dev" aria-label="Soumyabrata Dev"><img src="photos/thumbs/soumyabrata_dev.jpg" alt="" loading="lazy"></a><a href="team.html" title="Quentin Cordeau" aria-label="Quentin Cordeau"><img src="photos/thumbs/quentin_cordeau.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ijlal Haidar" aria-label="Ijlal Haidar"><img src="photos/thumbs/ijlal_haidar.jpg" alt="" loading="lazy"></a></div>
                     </div>
                 </article>
                 <article class="theme-panel" role="tabpanel" id="panel-finance" aria-labelledby="tab-finance" style="--accent:#A797F0" hidden>
@@ -1252,7 +1426,7 @@
                         <p>Focusing on Explainable AI (XAI) and multi-objective optimisation, this stream translates complex climate models into interpretable, interactive tools for local authorities and policymakers. Scholars design robust frameworks that balance socio-economic impacts, infrastructure costs, and emissions targets under uncertain climate scenarios.</p>
                         <ul class="chips"><li>Explainable AI</li><li>Optimisation</li><li>Uncertainty</li><li>Climate policy</li><li>HPC</li></ul>
                         <span class="people-label">Some of the people in this area</span>
-                        <div class="avatars"><a href="team.html" title="Dympna O&#x27;Sullivan" aria-label="Dympna O&#x27;Sullivan"><img src="photos/thumbs/dympna_osullivan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Goran Dominioni" aria-label="Goran Dominioni"><img src="photos/thumbs/goran_dominioni.jpg" alt="" loading="lazy"></a><a href="team.html" title="Venkatesh Kannan" aria-label="Venkatesh Kannan"><img src="photos/thumbs/venkatesh_kannan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Maha Ezzat" aria-label="Maha Ezzat"><img src="photos/thumbs/maha_ezzat.jpg" alt="" loading="lazy"></a><a href="team.html" title="Tiwaloluwa Onibonoje" aria-label="Tiwaloluwa Onibonoje"><img src="photos/thumbs/tiwaloluwa_onibonoje.jpg" alt="" loading="lazy"></a></div>
+                        <div class="avatars"><a href="team.html" title="Emma Murphy" aria-label="Emma Murphy"><img src="photos/thumbs/emma_murphy.jpg" alt="" loading="lazy"></a><a href="team.html" title="Dympna O&#x27;Sullivan" aria-label="Dympna O&#x27;Sullivan"><img src="photos/thumbs/dympna_osullivan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Goran Dominioni" aria-label="Goran Dominioni"><img src="photos/thumbs/goran_dominioni.jpg" alt="" loading="lazy"></a><a href="team.html" title="Venkatesh Kannan" aria-label="Venkatesh Kannan"><img src="photos/thumbs/venkatesh_kannan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Purity Biwott" aria-label="Purity Biwott"><img src="photos/thumbs/purity_biwott.jpg" alt="" loading="lazy"></a><a href="team.html" title="Tiwaloluwa Onibonoje" aria-label="Tiwaloluwa Onibonoje"><img src="photos/thumbs/tiwaloluwa_onibonoje.jpg" alt="" loading="lazy"></a><a href="team.html" title="Maha Ezzat" aria-label="Maha Ezzat"><img src="photos/thumbs/maha_ezzat.jpg" alt="" loading="lazy"></a></div>
                     </div>
                 </article>
             </div>
@@ -1264,11 +1438,187 @@
             <div class="waypoint"><span class="tick"></span>03 &middot; Team</div>
             <h2>Our Team</h2>
         </div>
-        <div class="team-teaser-panel reveal-target">
-            <p>Decarb-AI operates across a collaborative ecosystem of highly regarded Irish higher education institutions, coordinated by <a href="https://www.ucd.ie" target="_blank" rel="noopener" class="partner-link">University College Dublin</a> as the lead institution. Partners include <a href="https://www.tcd.ie" target="_blank" rel="noopener" class="partner-link">Trinity College Dublin</a>, <a href="https://www.dcu.ie" target="_blank" rel="noopener" class="partner-link">Dublin City University</a>, <a href="https://www.tudublin.ie" target="_blank" rel="noopener" class="partner-link">Technological University Dublin</a>, <a href="https://www.ul.ie" target="_blank" rel="noopener" class="partner-link">University of Limerick</a>, <a href="https://www.universityofgalway.ie" target="_blank" rel="noopener" class="partner-link">University of Galway</a> (via <a href="https://www.ichec.ie" target="_blank" rel="noopener" class="partner-link">ICHEC</a>), and <a href="https://www.ucc.ie" target="_blank" rel="noopener" class="partner-link">University College Cork</a>.</p>
-            <p style="margin-bottom:0;">Our multidisciplinary expert team brings together over 50 academic personnel, including leading Principal Investigators, dedicated research supervisors, and two cohorts of fully funded doctoral iScholars, with a third cohort to follow.</p>
-            <div style="margin-top: 30px;">
-                <a href="team.html" class="btn-secondary">Open Team Directory</a>
+
+        <p class="team-intro reveal-target">Decarb-AI operates across a collaborative ecosystem of Irish higher education institutions, coordinated by <a href="https://www.ucd.ie" target="_blank" rel="noopener" class="partner-link">University College Dublin</a> with <a href="https://www.tcd.ie" target="_blank" rel="noopener" class="partner-link">Trinity College Dublin</a>, <a href="https://www.dcu.ie" target="_blank" rel="noopener" class="partner-link">Dublin City University</a>, <a href="https://www.tudublin.ie" target="_blank" rel="noopener" class="partner-link">TU Dublin</a>, <a href="https://www.ul.ie" target="_blank" rel="noopener" class="partner-link">University of Limerick</a>, <a href="https://www.universityofgalway.ie" target="_blank" rel="noopener" class="partner-link">University of Galway</a> (via <a href="https://www.ichec.ie" target="_blank" rel="noopener" class="partner-link">ICHEC</a>) and <a href="https://www.ucc.ie" target="_blank" rel="noopener" class="partner-link">University College Cork</a>.</p>
+
+        <div class="team-grid-home">
+            <article class="spotlight reveal-target" aria-roledescription="carousel" aria-label="iScholar spotlight" style="--accent:#F2B544">
+                <div class="spot-head">
+                    <span class="spot-kicker">iScholar spotlight</span>
+                    <div class="spot-controls">
+                        <button type="button" class="spot-btn" data-dir="-1" aria-label="Previous iScholar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+                        <span class="spot-count" aria-live="polite">01 / 11</span>
+                        <button type="button" class="spot-btn" data-dir="1" aria-label="Next iScholar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+                    </div>
+                </div>
+                <div class="spot-slides">
+                    <div class="spot-slide" data-accent="#F2B544" role="group" aria-roledescription="slide" aria-label="1 of 11: Chantelle Amoako-Atta">
+                        <a href="team.html" class="spot-photo" style="--accent:#F2B544" aria-label="Chantelle Amoako-Atta in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F2B544" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/chantelle_amoako-atta_lg.jpg" alt="Chantelle Amoako-Atta" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#F2B544">
+                            <span class="spot-theme">Energy &amp; Infrastructure</span>
+                            <h3>Chantelle Amoako-Atta</h3>
+                            <p class="spot-meta">University College Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">AI for Climate-Resilient Offshore Wind in Ireland</p>
+                            <p class="spot-blurb">Extending ECMWF’s Anemoi AI forecasting system to predict wind extremes in Irish waters, and linking them to structural fatigue models so offshore wind farms stay reliable as the climate changes.</p>
+                            <p class="spot-sup">Supervised by Andrew Parnell &amp; Abdollah Malekjafarian</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#4FB8C4" role="group" aria-roledescription="slide" aria-label="2 of 11: Lainey Ward" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#4FB8C4" aria-label="Lainey Ward in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#4FB8C4" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/lainey_ward_lg.jpg" alt="Lainey Ward" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#4FB8C4">
+                            <span class="spot-theme">Environment &amp; Ecology</span>
+                            <h3>Lainey Ward</h3>
+                            <p class="spot-meta">University College Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">AI-driven Seasonal Forecasting for Compounding Flood–Drought Events</p>
+                            <p class="spot-blurb">Forecasting “hydrological whiplash”, floods and droughts in quick succession, weeks to months ahead, to protect water resources and Ireland’s peatland carbon sinks.</p>
+                            <p class="spot-sup">Supervised by Fiachra O’Loughlin &amp; Conor Sweeney</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#4FB8C4" role="group" aria-roledescription="slide" aria-label="3 of 11: Asrit Ganti" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#4FB8C4" aria-label="Asrit Ganti in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#4FB8C4" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/asrit_ganti_lg.jpg" alt="Asrit Ganti" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#4FB8C4">
+                            <span class="spot-theme">Environment &amp; Ecology</span>
+                            <h3>Asrit Ganti</h3>
+                            <p class="spot-meta">Trinity College Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">Physics-Informed AI Linking Local Sensors to Ecosystem Carbon Fluxes</p>
+                            <p class="spot-blurb">Connecting root cameras, soil probes and field surveys to ecosystem-scale greenhouse gas measurements, so Ireland can track carbon in peatlands more accurately.</p>
+                            <p class="spot-sup">Supervised by Richard Nair &amp; Matthew Saunders</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#F2B544" role="group" aria-roledescription="slide" aria-label="4 of 11: Yanfeng Wang" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#F2B544" aria-label="Yanfeng Wang in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F2B544" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/yanfeng_wang_lg.jpg" alt="Yanfeng Wang" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#F2B544">
+                            <span class="spot-theme">Energy &amp; Infrastructure</span>
+                            <h3>Yanfeng Wang</h3>
+                            <p class="spot-meta">Trinity College Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">AI-driven Security Assessment of Multi-Energy Systems</p>
+                            <p class="spot-blurb">Building AI tools that test how renewable-based energy systems cope with storms, droughts and wildfires, keeping a greener grid secure.</p>
+                            <p class="spot-sup">Supervised by Jin Zhao &amp; Ian Donohue</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#F28A6B" role="group" aria-roledescription="slide" aria-label="5 of 11: Purity Biwott" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#F28A6B" aria-label="Purity Biwott in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F28A6B" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/purity_biwott_lg.jpg" alt="Purity Biwott" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#F28A6B">
+                            <span class="spot-theme">Decision Support</span>
+                            <h3>Purity Biwott</h3>
+                            <p class="spot-meta">Technological University Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">Designing User Interfaces for Climate Action Models</p>
+                            <p class="spot-blurb">Working with policymakers, climate scientists and machine learning experts to design intuitive, explainable interfaces that make complex climate models usable for real decisions.</p>
+                            <p class="spot-sup">Supervised by Emma Murphy &amp; Dympna O’Sullivan</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#F2B544" role="group" aria-roledescription="slide" aria-label="6 of 11: Raja Prabha Poolpandy" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#F2B544" aria-label="Raja Prabha Poolpandy in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F2B544" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/raja_prabha_poolpandy_lg.jpg" alt="Raja Prabha Poolpandy" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#F2B544">
+                            <span class="spot-theme">Energy &amp; Infrastructure</span>
+                            <h3>Raja Prabha Poolpandy</h3>
+                            <p class="spot-meta">Technological University Dublin &middot; Cohort 1</p>
+                            <p class="spot-project">Climate Risk Modelling &amp; Adaptive Infrastructure Planning</p>
+                            <p class="spot-blurb">Combining GIS, remote sensing and AI to map climate risks to Ireland’s transport, energy and water networks, and to plan low-carbon adaptation.</p>
+                            <p class="spot-sup">Supervised by Ciara Ahern</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#6CC77A" role="group" aria-roledescription="slide" aria-label="7 of 11: Quentin Cordeau" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#6CC77A" aria-label="Quentin Cordeau in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#6CC77A" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/quentin_cordeau_lg.jpg" alt="Quentin Cordeau" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#6CC77A">
+                            <span class="spot-theme">Land Use Systems</span>
+                            <h3>Quentin Cordeau</h3>
+                            <p class="spot-meta">University of Limerick &middot; Cohort 1</p>
+                            <p class="spot-project">Carbon Accounting in Ireland’s Afforested Peatlands</p>
+                            <p class="spot-blurb">Integrating field monitoring with spatio-temporal models to sharpen carbon emission estimates from forested peatlands and guide land-use decisions.</p>
+                            <p class="spot-sup">Supervised by James Sweeney</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#F28A6B" role="group" aria-roledescription="slide" aria-label="8 of 11: Tiwaloluwa Onibonoje" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#F28A6B" aria-label="Tiwaloluwa Onibonoje in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F28A6B" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/tiwaloluwa_onibonoje_lg.jpg" alt="Tiwaloluwa Onibonoje" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#F28A6B">
+                            <span class="spot-theme">Decision Support</span>
+                            <h3>Tiwaloluwa Onibonoje</h3>
+                            <p class="spot-meta">Dublin City University &middot; Cohort 2</p>
+                            <p class="spot-project">Underwater and Floating Data Centres: An Environmental Law Analysis</p>
+                            <p class="spot-blurb">Examining the international, EU and Irish law around placing data centres in offshore renewable energy parks, balancing low-carbon computing with marine protection.</p>
+                            <p class="spot-sup">Supervised by Goran Dominioni &amp; Edoardo Celeste</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#4FB8C4" role="group" aria-roledescription="slide" aria-label="9 of 11: Reza Sarkhosh" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#4FB8C4" aria-label="Reza Sarkhosh in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#4FB8C4" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/reza_sarkhosh_lg.jpg" alt="Reza Sarkhosh" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#4FB8C4">
+                            <span class="spot-theme">Environment &amp; Ecology</span>
+                            <h3>Reza Sarkhosh</h3>
+                            <p class="spot-meta">Dublin City University &middot; Cohort 2</p>
+                            <p class="spot-project">Physics-Informed Neural Networks for Water Resilience</p>
+                            <p class="spot-blurb">Blending physical laws with deep learning to build trustworthy models that help protect Ireland’s water systems against climate extremes.</p>
+                            <p class="spot-sup">Supervised by Muhammad Intizar Ali</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#A797F0" role="group" aria-roledescription="slide" aria-label="10 of 11: Ling Zhai" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#A797F0" aria-label="Ling Zhai in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#A797F0" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/ling_zhai_lg.jpg" alt="Ling Zhai" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#A797F0">
+                            <span class="spot-theme">Sustainable Finance</span>
+                            <h3>Ling Zhai</h3>
+                            <p class="spot-meta">University of Limerick &middot; Cohort 2</p>
+                            <p class="spot-project">AI for Sustainable Finance and Biodiversity Risk</p>
+                            <p class="spot-blurb">Using AI to help investors and lenders understand and price biodiversity and climate risk, steering capital towards nature-positive decarbonisation.</p>
+                            <p class="spot-sup">Supervised by John Garvey</p>
+                        </div>
+                    </div>
+                    <div class="spot-slide" data-accent="#4FB8C4" role="group" aria-roledescription="slide" aria-label="11 of 11: Shae Tjong" hidden>
+                        <a href="team.html" class="spot-photo" style="--accent:#4FB8C4" aria-label="Shae Tjong in the Team Directory">
+                            <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#4FB8C4" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg>
+                            <img src="photos/thumbs/shae_tjong_lg.jpg" alt="Shae Tjong" loading="lazy">
+                        </a>
+                        <div class="spot-body" style="--accent:#4FB8C4">
+                            <span class="spot-theme">Environment &amp; Ecology</span>
+                            <h3>Shae Tjong</h3>
+                            <p class="spot-meta">Trinity College Dublin &middot; Cohort 2</p>
+                            <p class="spot-project">Ecosystem Stability Under Change</p>
+                            <p class="spot-blurb">Investigating the interactions that keep ecosystems stable and resilient, bringing a background in theoretical and computational physics to ecology.</p>
+                            <p class="spot-sup">Supervised by Ian Donohue</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="spot-dots"><button type="button" class="spot-dot" aria-label="Show Chantelle Amoako-Atta" aria-current="true"></button><button type="button" class="spot-dot" aria-label="Show Lainey Ward"></button><button type="button" class="spot-dot" aria-label="Show Asrit Ganti"></button><button type="button" class="spot-dot" aria-label="Show Yanfeng Wang"></button><button type="button" class="spot-dot" aria-label="Show Purity Biwott"></button><button type="button" class="spot-dot" aria-label="Show Raja Prabha Poolpandy"></button><button type="button" class="spot-dot" aria-label="Show Quentin Cordeau"></button><button type="button" class="spot-dot" aria-label="Show Tiwaloluwa Onibonoje"></button><button type="button" class="spot-dot" aria-label="Show Reza Sarkhosh"></button><button type="button" class="spot-dot" aria-label="Show Ling Zhai"></button><button type="button" class="spot-dot" aria-label="Show Shae Tjong"></button></div>
+            </article>
+
+            <div class="team-side reveal-target">
+                <span class="spot-kicker">The people behind Decarb-AI</span>
+                <div class="photo-wall reveal-target" aria-label="Team members"><a href="team.html" title="Andrew Parnell" aria-label="Andrew Parnell" style="--d:0.00s"><img src="photos/thumbs/andrew_parnell.jpg" alt="" loading="lazy"></a><a href="team.html" title="Fiona Regan" aria-label="Fiona Regan" style="--d:0.04s"><img src="photos/thumbs/fiona_regan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Dympna O&#x27;Sullivan" aria-label="Dympna O&#x27;Sullivan" style="--d:0.08s"><img src="photos/thumbs/dympna_osullivan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ken Byrne" aria-label="Ken Byrne" style="--d:0.12s"><img src="photos/thumbs/ken_byrne.jpg" alt="" loading="lazy"></a><a href="team.html" title="Abdollah Malekjafarian" aria-label="Abdollah Malekjafarian" style="--d:0.16s"><img src="photos/thumbs/abdollah_malekjafarian.jpg" alt="" loading="lazy"></a><a href="team.html" title="Soumyabrata Dev" aria-label="Soumyabrata Dev" style="--d:0.20s"><img src="photos/thumbs/soumyabrata_dev.jpg" alt="" loading="lazy"></a><a href="team.html" title="Matthew Saunders" aria-label="Matthew Saunders" style="--d:0.24s"><img src="photos/thumbs/matthew_saunders.jpg" alt="" loading="lazy"></a><a href="team.html" title="Muhammad Intizar Ali" aria-label="Muhammad Intizar Ali" style="--d:0.28s"><img src="photos/thumbs/ali_intizar.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jenny Lawler" aria-label="Jenny Lawler" style="--d:0.32s"><img src="photos/thumbs/jenny_lawler.jpg" alt="" loading="lazy"></a><a href="team.html" title="Emma Murphy" aria-label="Emma Murphy" style="--d:0.36s"><img src="photos/thumbs/emma_murphy.jpg" alt="" loading="lazy"></a><a href="team.html" title="Yvonne Ryan" aria-label="Yvonne Ryan" style="--d:0.40s"><img src="photos/thumbs/yvonne_ryan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Markus Eichhorn" aria-label="Markus Eichhorn" style="--d:0.44s"><img src="photos/thumbs/markus_eichhorn.jpg" alt="" loading="lazy"></a><a href="team.html" title="James Kelly" aria-label="James Kelly" style="--d:0.00s"><img src="photos/thumbs/james_kelly.jpg" alt="" loading="lazy"></a><a href="team.html" title="Shae Tjong" aria-label="Shae Tjong" style="--d:0.04s"><img src="photos/thumbs/shae_tjong.jpg" alt="" loading="lazy"></a><a href="team.html" title="Tiwaloluwa Onibonoje" aria-label="Tiwaloluwa Onibonoje" style="--d:0.08s"><img src="photos/thumbs/tiwaloluwa_onibonoje.jpg" alt="" loading="lazy"></a><a href="team.html" title="Maha Ezzat" aria-label="Maha Ezzat" style="--d:0.12s"><img src="photos/thumbs/maha_ezzat.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ling Zhai" aria-label="Ling Zhai" style="--d:0.16s"><img src="photos/thumbs/ling_zhai.jpg" alt="" loading="lazy"></a><a href="team.html" title="Chantelle Amoako-Atta" aria-label="Chantelle Amoako-Atta" style="--d:0.20s"><img src="photos/thumbs/chantelle_amoako-atta.jpg" alt="" loading="lazy"></a><a href="team.html" title="Asrit Ganti" aria-label="Asrit Ganti" style="--d:0.24s"><img src="photos/thumbs/asrit_ganti.jpg" alt="" loading="lazy"></a><a href="team.html" title="Purity Biwott" aria-label="Purity Biwott" style="--d:0.28s"><img src="photos/thumbs/purity_biwott.jpg" alt="" loading="lazy"></a><a href="team.html" title="Quentin Cordeau" aria-label="Quentin Cordeau" style="--d:0.32s"><img src="photos/thumbs/quentin_cordeau.jpg" alt="" loading="lazy"></a><a href="team.html" title="Fiachra O&#x27;Loughlin" aria-label="Fiachra O&#x27;Loughlin" style="--d:0.36s"><img src="photos/thumbs/fiachra_oloughlin.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ian Donohue" aria-label="Ian Donohue" style="--d:0.40s"><img src="photos/thumbs/ian_donohue.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jean O&#x27;Dwyer" aria-label="Jean O&#x27;Dwyer" style="--d:0.44s"><img src="photos/thumbs/jean_odwyer.jpg" alt="" loading="lazy"></a><a href="team.html" title="Venkatesh Kannan" aria-label="Venkatesh Kannan" style="--d:0.00s"><img src="photos/thumbs/venkatesh_kannan.jpg" alt="" loading="lazy"></a><a href="team.html" title="Conor Sweeney" aria-label="Conor Sweeney" style="--d:0.04s"><img src="photos/thumbs/conor_sweeney.jpg" alt="" loading="lazy"></a><a href="team.html" title="Richard Nair" aria-label="Richard Nair" style="--d:0.08s"><img src="photos/thumbs/richard_nair.jpg" alt="" loading="lazy"></a><a href="team.html" title="Jin Zhao" aria-label="Jin Zhao" style="--d:0.12s"><img src="photos/thumbs/jin_zhao.jpg" alt="" loading="lazy"></a><a href="team.html" title="Goran Dominioni" aria-label="Goran Dominioni" style="--d:0.16s"><img src="photos/thumbs/goran_dominioni.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ciara Ahern" aria-label="Ciara Ahern" style="--d:0.20s"><img src="photos/thumbs/ciara_ahern.jpg" alt="" loading="lazy"></a><a href="team.html" title="John Garvey" aria-label="John Garvey" style="--d:0.24s"><img src="photos/thumbs/john_garvey.jpg" alt="" loading="lazy"></a><a href="team.html" title="James Sweeney" aria-label="James Sweeney" style="--d:0.28s"><img src="photos/thumbs/james_sweeney.jpg" alt="" loading="lazy"></a><a href="team.html" title="Antony Knights" aria-label="Antony Knights" style="--d:0.32s"><img src="photos/thumbs/antony_knights.jpg" alt="" loading="lazy"></a><a href="team.html" title="Rajesh Subramanian" aria-label="Rajesh Subramanian" style="--d:0.36s"><img src="photos/thumbs/rajesh_subramanian.jpg" alt="" loading="lazy"></a><a href="team.html" title="Kalpana Thalangama Appuhamilage" aria-label="Kalpana Thalangama Appuhamilage" style="--d:0.40s"><img src="photos/thumbs/kalpana_thalangama_appuhamilage.jpg" alt="" loading="lazy"></a><a href="team.html" title="Reza Sarkhosh" aria-label="Reza Sarkhosh" style="--d:0.44s"><img src="photos/thumbs/reza_sarkhosh.jpg" alt="" loading="lazy"></a><a href="team.html" title="Lindah Fatuma Kakai" aria-label="Lindah Fatuma Kakai" style="--d:0.00s"><img src="photos/thumbs/lindah_fatuma_kakai.jpg" alt="" loading="lazy"></a><a href="team.html" title="Ijlal Haidar" aria-label="Ijlal Haidar" style="--d:0.04s"><img src="photos/thumbs/ijlal_haidar.jpg" alt="" loading="lazy"></a><a href="team.html" title="Lainey Ward" aria-label="Lainey Ward" style="--d:0.08s"><img src="photos/thumbs/lainey_ward.jpg" alt="" loading="lazy"></a><a href="team.html" title="Yanfeng Wang" aria-label="Yanfeng Wang" style="--d:0.12s"><img src="photos/thumbs/yanfeng_wang.jpg" alt="" loading="lazy"></a><a href="team.html" title="Raja Prabha Poolpandy" aria-label="Raja Prabha Poolpandy" style="--d:0.16s"><img src="photos/thumbs/raja_prabha_poolpandy.jpg" alt="" loading="lazy"></a><a href="team.html" title="Lily Nobles" aria-label="Lily Nobles" style="--d:0.20s"><img src="photos/thumbs/lily_nobles.jpg" alt="" loading="lazy"></a></div>
+                <div class="team-counts">
+                    <div><strong>8</strong><span>Lead PIs</span></div>
+                    <div><strong>16</strong><span>Supervisors</span></div>
+                    <div><strong>19</strong><span>iScholars</span></div>
+                </div>
+                <a href="team.html" class="btn-explore">Explore the Team Directory <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </div>
         </div>
     </section>
@@ -1550,6 +1900,95 @@
             window.addEventListener('scroll', onScroll, { passive: true });
             window.addEventListener('resize', onScroll);
             update();
+        })();
+
+        // Team: iScholar spotlight carousel (auto-advances with a progress
+        // bar, pauses on hover/off screen) and a photo wall that lights up
+        // a random face every so often.
+        (function () {
+            var spot = document.querySelector('.spotlight');
+            if (!spot) return;
+            var slides = spot.querySelectorAll('.spot-slide');
+            var dots = spot.querySelectorAll('.spot-dot');
+            var count = spot.querySelector('.spot-count');
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var current = 0, hovering = false, offscreen = true;
+            function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+            function go(i) {
+                current = (i + slides.length) % slides.length;
+                slides.forEach(function (s, j) { s.hidden = j !== current; });
+                dots.forEach(function (d, j) {
+                    d.classList.toggle('done', j < current);
+                    if (j === current) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+                });
+                spot.style.setProperty('--accent', slides[current].getAttribute('data-accent'));
+                count.textContent = pad(current + 1) + ' / ' + pad(slides.length);
+            }
+            function userGo(i) { spot.classList.remove('autoplay'); go(i); }
+            // size the card to its tallest slide so the page doesn't jump as it rotates
+            var holder = spot.querySelector('.spot-slides');
+            function lockHeight() {
+                holder.style.minHeight = '';
+                var tallest = 0;
+                slides.forEach(function (s, j) {
+                    slides.forEach(function (x, k) { x.hidden = k !== j; });
+                    tallest = Math.max(tallest, holder.offsetHeight);
+                });
+                slides.forEach(function (x, k) { x.hidden = k !== current; });
+                holder.style.minHeight = tallest + 'px';
+            }
+            var resizeTimer;
+            window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(lockHeight, 150); });
+            lockHeight();
+            function updatePause() { spot.classList.toggle('paused', hovering || offscreen); }
+
+            spot.querySelectorAll('.spot-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () { userGo(current + Number(btn.getAttribute('data-dir'))); });
+            });
+            dots.forEach(function (dot, i) {
+                dot.addEventListener('click', function () { userGo(i); });
+                dot.addEventListener('animationend', function () {
+                    if (spot.classList.contains('autoplay')) go(current + 1);
+                });
+            });
+            spot.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') userGo(current + 1);
+                if (e.key === 'ArrowLeft') userGo(current - 1);
+            });
+            // swipe on touch screens
+            var startX = null;
+            spot.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') startX = e.clientX; });
+            spot.addEventListener('pointerup', function (e) {
+                if (startX === null) return;
+                var dx = e.clientX - startX;
+                startX = null;
+                if (Math.abs(dx) > 45) userGo(current + (dx < 0 ? 1 : -1));
+            });
+
+            if (!reduceMotion) {
+                spot.classList.add('autoplay');
+                spot.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hovering = true; updatePause(); } });
+                spot.addEventListener('pointerleave', function () { hovering = false; updatePause(); });
+                spot.addEventListener('focusin', function () { hovering = true; updatePause(); });
+                spot.addEventListener('focusout', function () { hovering = false; updatePause(); });
+                new IntersectionObserver(function (entries) {
+                    offscreen = !entries[0].isIntersecting;
+                    updatePause();
+                }, { threshold: 0.4 }).observe(spot);
+                updatePause();
+            }
+
+            var wall = document.querySelectorAll('.photo-wall a');
+            if (reduceMotion || !wall.length) return;
+            var lit = null, wallVisible = false;
+            new IntersectionObserver(function (entries) { wallVisible = entries[0].isIntersecting; }).observe(document.querySelector('.photo-wall'));
+            setInterval(function () {
+                if (!wallVisible || document.hidden) return;
+                if (lit) lit.classList.remove('lit');
+                lit = wall[Math.floor(Math.random() * wall.length)];
+                lit.classList.add('lit');
+            }, 1400);
         })();
 
         // Research explorer: tabs auto-advance (progress bar on the active tab)
