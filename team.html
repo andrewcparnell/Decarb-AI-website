@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#102A24">
     <title>Team Directory | Decarb-AI</title>
-    <link rel="icon" type="image/png" href="Logo3.png">
+    <meta name="description" content="Meet the Decarb-AI team: principal investigators, academic supervisors and PhD iScholars across seven Irish institutions.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Team Directory | Decarb-AI">
+    <meta property="og:image" content="https://decarb-ai.org/images/Logo1.png">
+    <link rel="icon" type="image/png" href="images/Logo3.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -144,7 +148,7 @@
             position: relative;
             background-image:
                 linear-gradient(180deg, rgba(9,26,22,.6) 0%, rgba(9,20,17,.86) 100%),
-                url('Picture 8.jpg');
+                url('images/team_header.jpg');
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -217,7 +221,7 @@
 
         .category-block {
             margin-bottom: 84px;
-            scroll-margin-top: 100px;
+            scroll-margin-top: 150px;
         }
         .category-block:last-child { margin-bottom: 0; }
 
@@ -270,6 +274,93 @@
             transition: filter .35s ease;
         }
         .member-card:hover img { filter: grayscale(0%); }
+
+        /* placeholder when no photo is available yet */
+        .avatar-initials {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 2.1em;
+            font-weight: 500;
+            letter-spacing: .02em;
+            color: var(--white);
+            background: linear-gradient(135deg, var(--ink-soft) 0%, var(--moss) 100%);
+            border: 1px solid var(--line);
+        }
+        .member-card:hover .avatar-initials {
+            background: linear-gradient(135deg, var(--moss) 0%, var(--moss-bright) 100%);
+        }
+
+        .member-card.is-hidden { display: none; }
+        .category-block.is-empty { display: none; }
+
+        .category-title .count {
+            font-family: var(--font-mono);
+            font-size: .5em;
+            color: var(--text-muted);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 2px 10px;
+            letter-spacing: .04em;
+        }
+        .category-sub {
+            font-family: var(--font-mono);
+            font-size: .74em;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--moss);
+            margin: -24px 0 26px;
+        }
+
+        /* ============ INSTITUTION FILTER ============ */
+        .filter-bar {
+            position: sticky;
+            top: 64px;
+            z-index: 50;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 0;
+            margin-bottom: 56px;
+            background: rgba(243, 245, 238, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+        }
+        .filter-bar .filter-label {
+            font-family: var(--font-mono);
+            font-size: .72em;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-right: 6px;
+        }
+        .filter-chip {
+            font-family: var(--font-mono);
+            font-size: .76em;
+            color: var(--moss);
+            background: var(--white);
+            border: 1px solid var(--line);
+            padding: 5px 15px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all .2s var(--ease);
+        }
+        .filter-chip:hover { border-color: var(--moss); }
+        .filter-chip[aria-pressed="true"] {
+            background: var(--moss);
+            border-color: var(--moss);
+            color: var(--white);
+        }
+        @media (max-width: 720px) {
+            .filter-bar { position: static; }
+        }
 
         .role-modifier {
             display: inline-block;
@@ -376,71 +467,84 @@
         <div class="sub-nav-links">
             <a href="#pis">Principal Investigators</a>
             <a href="#supervisors">Academic Supervisors</a>
-            <a href="#scholars">PhD iScholars</a>
+            <a href="#cohort-2">iScholars &middot; Cohort 2</a>
+            <a href="#cohort-1">iScholars &middot; Cohort 1</a>
         </div>
     </div>
 
     <div class="container">
 
+        <div class="filter-bar" role="group" aria-label="Filter team by institution">
+            <span class="filter-label">Filter</span>
+            <button type="button" class="filter-chip" data-inst="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-chip" data-inst="UCD" aria-pressed="false">UCD</button>
+            <button type="button" class="filter-chip" data-inst="TCD" aria-pressed="false">TCD</button>
+            <button type="button" class="filter-chip" data-inst="DCU" aria-pressed="false">DCU</button>
+            <button type="button" class="filter-chip" data-inst="TUD" aria-pressed="false">TU Dublin</button>
+            <button type="button" class="filter-chip" data-inst="UL" aria-pressed="false">UL</button>
+            <button type="button" class="filter-chip" data-inst="UCC" aria-pressed="false">UCC</button>
+            <button type="button" class="filter-chip" data-inst="ICHEC" aria-pressed="false">ICHEC / Galway</button>
+        </div>
+
         <div class="category-block" id="pis">
-            <div class="category-title"><span class="tick"></span>Principal Investigators</div>
+            <div class="category-title"><span class="tick"></span>Principal Investigators <span class="count">8</span></div>
             <div class="team-grid">
 
-                <div class="member-card reveal-target">
-                    <img src="photos/andrew_parnell.png" alt="Andrew Parnell">
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/andrew_parnell.png" alt="Andrew Parnell" loading="lazy">
                     <h3>Andrew Parnell</h3>
                     <span class="role-modifier">Director</span>
                     <p>University College Dublin</p>
                     <a href="https://people.ucd.ie/andrew.parnell1" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/fiachra_oloughlin.png" alt="Fiachra O'Loughlin">
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/fiachra_oloughlin.png" alt="Fiachra O'Loughlin" loading="lazy">
                     <h3>Fiachra O'Loughlin</h3>
                     <span class="role-modifier">Deputy Director</span>
                     <p>University College Dublin</p>
                     <a href="https://people.ucd.ie/fiachra.oloughlin" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/fiona_regan.png" alt="Fiona Regan">
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <img src="photos/fiona_regan.png" alt="Fiona Regan" loading="lazy">
                     <h3>Fiona Regan</h3>
                     <p>Dublin City University</p>
                     <a href="https://www.dcu.ie/chemistry/people/fiona-regan" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/ian_donohue.png" alt="Ian Donohue">
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/ian_donohue.png" alt="Ian Donohue" loading="lazy">
                     <h3>Ian Donohue</h3>
                     <p>Trinity College Dublin</p>
                     <a href="https://www.tcd.ie/research/profiles/?profile=donohui" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/dympna_osullivan.png" alt="Dympna O'Sullivan">
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <img src="photos/dympna_osullivan.png" alt="Dympna O'Sullivan" loading="lazy">
                     <h3>Dympna O'Sullivan</h3>
                     <p>Technological University Dublin</p>
                     <a href="https://www.tudublin.ie/explore/faculties-and-schools/computing-digital-data/school-of-computer-science/people/academic-staff/dympna-osullivan.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/jean_odwyer.png" alt="Jean O'Dwyer">
+                <div class="member-card reveal-target" data-inst="UCC">
+                    <img src="photos/jean_odwyer.png" alt="Jean O'Dwyer" loading="lazy">
                     <h3>Jean O'Dwyer</h3>
                     <p>University College Cork</p>
                     <a href="https://www.ucc.ie/en/bees/people/jeanodwyer/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/ken_byrne.png" alt="Ken Byrne">
+                <div class="member-card reveal-target" data-inst="UL">
+                    <img src="photos/ken_byrne.png" alt="Ken Byrne" loading="lazy">
                     <h3>Ken Byrne</h3>
                     <p>University of Limerick</p>
                     <a href="https://pure.ul.ie/en/persons/kenneth-byrne/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/venkatesh_kannan.png" alt="Venkatesh Kannan">
+                <div class="member-card reveal-target" data-inst="ICHEC">
+                    <img src="photos/venkatesh_kannan.png" alt="Venkatesh Kannan" loading="lazy">
                     <h3>Venkatesh Kannan</h3>
-                    <p>ICHEC</p>
+                    <p>ICHEC / University of Galway</p>
                     <a href="https://www.ichec.ie/staff/venkateshkannan" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
@@ -448,133 +552,269 @@
         </div>
 
         <div class="category-block" id="supervisors">
-            <div class="category-title"><span class="tick"></span>Academic Supervisors</div>
+            <div class="category-title"><span class="tick"></span>Academic Supervisors <span class="count">16</span></div>
             <div class="team-grid">
 
-                <div class="member-card reveal-target">
-                    <img src="photos/richard_nair.png" alt="Richard Nair">
-                    <h3>Richard Nair</h3>
-                    <p>Trinity College Dublin</p>
-                    <a href="https://www.tcd.ie/botany/people/academic/nairri/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/matthew_saunders.png" alt="Matthew Saunders">
-                    <h3>Matthew Saunders</h3>
-                    <p>Trinity College Dublin</p>
-                    <a href="https://www.tcd.ie/research/profiles/?profile=saundem" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/jin_zhao.png" alt="Jin Zhao">
-                    <h3>Jin Zhao</h3>
-                    <p>Trinity College Dublin</p>
-                    <a href="https://www.tcd.ie/eleceng/people/academics/zhaoj6/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/emma_murphy.png" alt="Emma Murphy">
-                    <h3>Emma Murphy</h3>
-                    <p>Technological University Dublin</p>
-                    <a href="https://www.tudublin.ie/explore/faculties-and-schools/computing-digital-data/school-of-computer-science/people/academic-staff/emma-murphy.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/ciara_ahern.png" alt="Ciara Ahern">
-                    <h3>Ciara Ahern</h3>
-                    <p>Technological University Dublin</p>
-                    <a href="https://www.tudublin.ie/research-innovation/research/discover-our-research/research-centres/beric/people/academic-staff/ciara-ahern.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/antony_knights.png" alt="Antony Knights">
-                    <h3>Antony Knights</h3>
-                    <p>University College Cork</p>
-                    <a href="https://www.ucc.ie/en/bees/staff/antonyknights/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/conor_sweeney.png" alt="Conor Sweeney">
-                    <h3>Conor Sweeney</h3>
-                    <p>University College Dublin</p>
-                    <a href="https://people.ucd.ie/conor.sweeney" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/abdollah_malekjafarian.png" alt="Abdollah Malekjafarian">
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/abdollah_malekjafarian.png" alt="Abdollah Malekjafarian" loading="lazy">
                     <h3>Abdollah Malekjafarian</h3>
                     <p>University College Dublin</p>
                     <a href="https://people.ucd.ie/abdollah.malekjafarian" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/james_sweeney.png" alt="James Sweeney">
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/conor_sweeney.png" alt="Conor Sweeney" loading="lazy">
+                    <h3>Conor Sweeney</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/conor.sweeney" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/soumyabrata_dev.jpg" alt="Soumyabrata Dev" loading="lazy">
+                    <h3>Soumyabrata Dev</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/scss/people/academic-staff/devs/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/richard_nair.png" alt="Richard Nair" loading="lazy">
+                    <h3>Richard Nair</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/botany/people/academic/nairri/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/matthew_saunders.png" alt="Matthew Saunders" loading="lazy">
+                    <h3>Matthew Saunders</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/profiles/?profile=saundem" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/jin_zhao.png" alt="Jin Zhao" loading="lazy">
+                    <h3>Jin Zhao</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/eleceng/people/academics/zhaoj6/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <img src="photos/ali_intizar.jpg" alt="Muhammad Intizar Ali" loading="lazy">
+                    <h3>Muhammad Intizar Ali</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://www.dcu.ie/electronics/people/ali-intizar" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <img src="photos/goran_dominioni.jpg" alt="Goran Dominioni" loading="lazy">
+                    <h3>Goran Dominioni</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://www.dcu.ie/lawandgovernment/people/goran-dominioni" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <img src="photos/jenny_lawler.jpg" alt="Jenny Lawler" loading="lazy">
+                    <h3>Jenny Lawler</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://www.dcu.ie/biotechnology/people/jenny-lawler" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <img src="photos/ciara_ahern.png" alt="Ciara Ahern" loading="lazy">
+                    <h3>Ciara Ahern</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/research-innovation/research/discover-our-research/research-centres/beric/people/academic-staff/ciara-ahern.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <img src="photos/emma_murphy.png" alt="Emma Murphy" loading="lazy">
+                    <h3>Emma Murphy</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/explore/faculties-and-schools/computing-digital-data/school-of-computer-science/people/academic-staff/emma-murphy.php" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <img src="photos/john_garvey.jpg" alt="John Garvey" loading="lazy">
+                    <h3>John Garvey</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://pure.ul.ie/en/persons/john-garvey/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <img src="photos/yvonne_ryan.jpg" alt="Yvonne Ryan" loading="lazy">
+                    <h3>Yvonne Ryan</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://pure.ul.ie/en/persons/yvonne-ryan/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <img src="photos/james_sweeney.png" alt="James Sweeney" loading="lazy">
                     <h3>James Sweeney</h3>
                     <p>University of Limerick</p>
                     <a href="https://www.ul.ie/scieng/dr-james-sweeney" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
+                <div class="member-card reveal-target" data-inst="UCC">
+                    <img src="photos/markus_eichhorn.jpg" alt="Markus Eichhorn" loading="lazy">
+                    <h3>Markus Eichhorn</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/en/bees/people/markuseichhorn" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UCC">
+                    <img src="photos/antony_knights.png" alt="Antony Knights" loading="lazy">
+                    <h3>Antony Knights</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/en/bees/staff/antonyknights/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
             </div>
         </div>
 
-        <div class="category-block" id="scholars">
-            <div class="category-title"><span class="tick"></span>PhD iScholars</div>
+        <div class="category-block" id="cohort-2">
+            <div class="category-title"><span class="tick"></span>PhD iScholars &middot; Cohort 2 <span class="count">11</span></div>
+            <div class="category-sub">Started September 2026</div>
             <div class="team-grid">
 
-                <div class="member-card reveal-target">
-                    <img src="photos/asrit_ganti.png" alt="Asrit Ganti">
-                    <h3>Asrit Ganti</h3>
-                    <p>Trinity College Dublin</p>
-                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/yanfeng_wang.jpg" alt="Yanfeng Wang">
-                    <h3>Yanfeng Wang</h3>
-                    <p>Trinity College Dublin</p>
-                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/purity_biwott.png" alt="Purity Biwott">
-                    <h3>Purity Biwott</h3>
-                    <p>Technological University Dublin</p>
-                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/Raja_Prabha_Poolpandy.png" alt="Raja Prabha Poolpandy">
-                    <h3>Raja Prabha Poolpandy</h3>
-                    <p>Technological University Dublin</p>
-                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
-                </div>
-
-                <div class="member-card reveal-target">
-                    <img src="photos/lainey_ward.png" alt="Lainey Ward">
-                    <h3>Lainey Ward</h3>
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <div class="avatar-initials" aria-hidden="true">JK</div>
+                    <h3>James Kelly</h3>
                     <p>University College Dublin</p>
                     <a href="https://people.ucd.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/chantelle_amoako-atta.png" alt="Chantelle Amoako-Atta">
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/rajesh_subramanian.jpg" alt="Rajesh Subramanian" loading="lazy">
+                    <h3>Rajesh Subramanian</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://srajesh2712.github.io" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <div class="avatar-initials" aria-hidden="true">ST</div>
+                    <h3>Shae Tjong</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <div class="avatar-initials" aria-hidden="true">KA</div>
+                    <h3>Kalpana Thalangama Appuhamilage</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://www.dcu.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <div class="avatar-initials" aria-hidden="true">TO</div>
+                    <h3>Tiwaloluwa Onibonoje</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://orcid.org/0009-0007-6121-4810" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="DCU">
+                    <img src="photos/reza_sarkhosh.jpg" alt="Reza Sarkhosh" loading="lazy">
+                    <h3>Reza Sarkhosh</h3>
+                    <p>Dublin City University</p>
+                    <a href="https://github.com/rezasarkhosh" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <div class="avatar-initials" aria-hidden="true">ME</div>
+                    <h3>Maha Ezzat</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <div class="avatar-initials" aria-hidden="true">LK</div>
+                    <h3>Lindah Fatuma Kakai</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://www.ul.ie/research" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <div class="avatar-initials" aria-hidden="true">LZ</div>
+                    <h3>Ling Zhai</h3>
+                    <p>University of Limerick</p>
+                    <a href="https://www.ul.ie/research" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UCC">
+                    <div class="avatar-initials" aria-hidden="true">IH</div>
+                    <h3>Ijlal Haidar</h3>
+                    <p>University College Cork</p>
+                    <a href="https://orcid.org/0009-0007-4166-5526" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="ICHEC">
+                    <div class="avatar-initials" aria-hidden="true">LZ</div>
+                    <h3>Lanyi Zhang</h3>
+                    <span class="role-modifier">Joining Dec 2026</span>
+                    <p>ICHEC / University of Galway</p>
+                    <a href="https://www.ichec.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="category-block" id="cohort-1">
+            <div class="category-title"><span class="tick"></span>PhD iScholars &middot; Cohort 1 <span class="count">8</span></div>
+            <div class="category-sub">Started September 2025</div>
+            <div class="team-grid">
+
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/chantelle_amoako-atta.png" alt="Chantelle Amoako-Atta" loading="lazy">
                     <h3>Chantelle Amoako-Atta</h3>
                     <p>University College Dublin</p>
                     <a href="https://people.ucd.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/lily_nobles.png" alt="Lily Nobles">
-                    <h3>Lily Nobles</h3>
-                    <p>University College Cork</p>
-                    <a href="https://www.ucc.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                <div class="member-card reveal-target" data-inst="UCD">
+                    <img src="photos/lainey_ward.png" alt="Lainey Ward" loading="lazy">
+                    <h3>Lainey Ward</h3>
+                    <p>University College Dublin</p>
+                    <a href="https://people.ucd.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
-                <div class="member-card reveal-target">
-                    <img src="photos/quentin_cordeau.png" alt="Quentin Cordeau">
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/asrit_ganti.png" alt="Asrit Ganti" loading="lazy">
+                    <h3>Asrit Ganti</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TCD">
+                    <img src="photos/yanfeng_wang.jpg" alt="Yanfeng Wang" loading="lazy">
+                    <h3>Yanfeng Wang</h3>
+                    <p>Trinity College Dublin</p>
+                    <a href="https://www.tcd.ie/research/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <img src="photos/purity_biwott.png" alt="Purity Biwott" loading="lazy">
+                    <h3>Purity Biwott</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="TUD">
+                    <img src="photos/Raja_Prabha_Poolpandy.png" alt="Raja Prabha Poolpandy" loading="lazy">
+                    <h3>Raja Prabha Poolpandy</h3>
+                    <p>Technological University Dublin</p>
+                    <a href="https://www.tudublin.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UL">
+                    <img src="photos/quentin_cordeau.png" alt="Quentin Cordeau" loading="lazy">
                     <h3>Quentin Cordeau</h3>
                     <p>University of Limerick</p>
                     <a href="https://www.ul.ie/research" target="_blank" rel="noopener" class="profile-link">Profile</a>
+                </div>
+
+                <div class="member-card reveal-target" data-inst="UCC">
+                    <img src="photos/lily_nobles.png" alt="Lily Nobles" loading="lazy">
+                    <h3>Lily Nobles</h3>
+                    <p>University College Cork</p>
+                    <a href="https://www.ucc.ie/" target="_blank" rel="noopener" class="profile-link">Profile</a>
                 </div>
 
             </div>
@@ -613,6 +853,32 @@
                 });
             }, { threshold: 0.1 });
             targets.forEach(function (el) { io.observe(el); });
+        })();
+
+        // Institution filter + per-section counts
+        (function () {
+            var chips = document.querySelectorAll('.filter-chip');
+            var blocks = document.querySelectorAll('.category-block');
+            function apply(inst, revealNow) {
+                blocks.forEach(function (block) {
+                    var shown = 0;
+                    block.querySelectorAll('.member-card').forEach(function (card) {
+                        var match = inst === 'all' || card.dataset.inst === inst;
+                        card.classList.toggle('is-hidden', !match);
+                        if (match) { shown++; if (revealNow) card.classList.add('is-visible'); }
+                    });
+                    block.classList.toggle('is-empty', shown === 0);
+                    var count = block.querySelector('.count');
+                    if (count) count.textContent = shown;
+                });
+                chips.forEach(function (chip) {
+                    chip.setAttribute('aria-pressed', chip.dataset.inst === inst ? 'true' : 'false');
+                });
+            }
+            chips.forEach(function (chip) {
+                chip.addEventListener('click', function () { apply(chip.dataset.inst, true); });
+            });
+            apply('all', false);
         })();
     </script>
 
