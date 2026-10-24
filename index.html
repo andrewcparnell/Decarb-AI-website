@@ -2057,6 +2057,115 @@
             header.addEventListener('pointerleave', function () { mouse = null; });
         })();
 
+        /* team-js:start */
+        // Team: iScholar spotlight carousel (auto-advances with a progress
+        // bar, pauses on hover/off screen) and a photo wall that lights up
+        // a random face every so often.
+        (function () {
+            var spot = document.querySelector('.spotlight');
+            if (!spot) return;
+            var slides = spot.querySelectorAll('.spot-slide');
+            var dots = spot.querySelectorAll('.spot-dot');
+            var count = spot.querySelector('.spot-count');
+            // show the iScholars in a different order on every visit
+            (function () {
+                var holder = spot.querySelector('.spot-slides'), dotBox = spot.querySelector('.spot-dots');
+                var pairs = Array.prototype.map.call(slides, function (s, i) { return [s, dots[i]]; });
+                for (var i = pairs.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1)), t = pairs[i];
+                    pairs[i] = pairs[j]; pairs[j] = t;
+                }
+                pairs.forEach(function (p, k) {
+                    holder.appendChild(p[0]);
+                    dotBox.appendChild(p[1]);
+                    p[0].setAttribute('aria-label', (k + 1) + ' of ' + pairs.length + ': ' + p[0].querySelector('h3').textContent);
+                });
+                slides = spot.querySelectorAll('.spot-slide');
+                dots = spot.querySelectorAll('.spot-dot');
+            })();
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var current = 0, hovering = false, offscreen = true;
+            function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+            function go(i) {
+                current = (i + slides.length) % slides.length;
+                slides.forEach(function (s, j) { s.hidden = j !== current; });
+                dots.forEach(function (d, j) {
+                    d.classList.toggle('done', j < current);
+                    if (j === current) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+                });
+                spot.style.setProperty('--accent', slides[current].getAttribute('data-accent'));
+                count.textContent = pad(current + 1) + ' / ' + pad(slides.length);
+            }
+            function userGo(i) { spot.classList.remove('autoplay'); go(i); }
+            // size the card to its tallest slide so the page doesn't jump as it rotates
+            var holder = spot.querySelector('.spot-slides');
+            function lockHeight() {
+                holder.style.minHeight = '';
+                var tallest = 0;
+                slides.forEach(function (s, j) {
+                    slides.forEach(function (x, k) { x.hidden = k !== j; });
+                    tallest = Math.max(tallest, holder.offsetHeight);
+                });
+                slides.forEach(function (x, k) { x.hidden = k !== current; });
+                holder.style.minHeight = tallest + 'px';
+            }
+            var resizeTimer;
+            window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(lockHeight, 150); });
+            lockHeight();
+            go(0);
+            function updatePause() { spot.classList.toggle('paused', hovering || offscreen); }
+
+            spot.querySelectorAll('.spot-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () { userGo(current + Number(btn.getAttribute('data-dir'))); });
+            });
+            dots.forEach(function (dot, i) {
+                dot.addEventListener('click', function () { userGo(i); });
+                dot.addEventListener('animationend', function () {
+                    if (spot.classList.contains('autoplay')) go(current + 1);
+                });
+            });
+            spot.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') userGo(current + 1);
+                if (e.key === 'ArrowLeft') userGo(current - 1);
+            });
+            // swipe on touch screens
+            var startX = null;
+            spot.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') startX = e.clientX; });
+            spot.addEventListener('pointerup', function (e) {
+                if (startX === null) return;
+                var dx = e.clientX - startX;
+                startX = null;
+                if (Math.abs(dx) > 45) userGo(current + (dx < 0 ? 1 : -1));
+            });
+
+            if (!reduceMotion) {
+                spot.classList.add('autoplay');
+                spot.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hovering = true; updatePause(); } });
+                spot.addEventListener('pointerleave', function () { hovering = false; updatePause(); });
+                spot.addEventListener('focusin', function () { hovering = true; updatePause(); });
+                spot.addEventListener('focusout', function () { hovering = false; updatePause(); });
+                new IntersectionObserver(function (entries) {
+                    offscreen = !entries[0].isIntersecting;
+                    updatePause();
+                }, { threshold: 0.4 }).observe(spot);
+                updatePause();
+            }
+
+            var wall = document.querySelectorAll('.photo-wall a');
+            if (reduceMotion || !wall.length) return;
+            var lit = null, wallVisible = false;
+            new IntersectionObserver(function (entries) { wallVisible = entries[0].isIntersecting; }).observe(document.querySelector('.photo-wall'));
+            setInterval(function () {
+                if (!wallVisible || document.hidden) return;
+                if (lit) lit.classList.remove('lit');
+                lit = wall[Math.floor(Math.random() * wall.length)];
+                lit.classList.add('lit');
+            }, 1400);
+        })();
+        /* team-js:end */
+
+        /* about-js:start */
         // About: partnership diagram captions (auto-cycles until someone
         // interacts) and a journey line that fills as you scroll.
         (function () {
@@ -2140,7 +2249,9 @@
             window.addEventListener('resize', onScroll);
             update();
         })();
+        /* about-js:end */
 
+        /* join-js:start */
         // Join: numbers count up the first time they scroll into view.
         (function () {
             var nums = document.querySelectorAll('[data-count]');
@@ -2163,6 +2274,7 @@
             }, { threshold: 0.6 });
             nums.forEach(function (el) { el.textContent = '0'; io.observe(el); });
         })();
+        /* join-js:end */
 
         // Research explorer: tabs auto-advance (progress bar on the active tab)
         // until someone picks a theme; paused on hover/focus and when off screen.
