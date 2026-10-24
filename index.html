@@ -281,6 +281,10 @@
             justify-content: center;
             margin-top: 34px;
         }
+        .hero-actions a {
+            min-width: 140px;
+            text-align: center;
+        }
         .btn-ghost {
             display: inline-block;
             padding: 13px 30px;
@@ -483,7 +487,7 @@
             display: inline-block;
         }
         .funders-grid img {
-            height: 84px;
+            height: 112px;
             width: auto;
             max-width: 100%;
             object-fit: contain;
@@ -491,6 +495,9 @@
             opacity: .72;
             transition: filter .3s ease, opacity .3s ease, transform .3s var(--ease);
         }
+        /* AIB artwork has wide transparent padding; scale it up to match */
+        .funders-grid img.logo-padded { transform: scale(1.45); }
+        .funders-grid a:hover img.logo-padded { transform: scale(1.45) translateY(-2px); }
         .funders-grid a:hover img {
             filter: grayscale(0%);
             opacity: 1;
@@ -709,7 +716,7 @@
             section { padding: 70px 20px; }
             h2 { font-size: 1.7em; }
             .funders-grid { gap: 34px; }
-            .funders-grid img { height: 60px; }
+            .funders-grid img { height: 80px; }
             .logo-container { width: 90%; padding: 24px 28px; }
         }
     </style>
@@ -742,8 +749,9 @@
             <h1>AI-Powered Pathways to Climate Resilience</h1>
 
             <div class="hero-actions">
-                <a href="#projects" class="btn-primary">Explore Our Research</a>
-                <a href="team.html" class="btn-ghost">Meet the Team</a>
+                <a href="#about" class="btn-primary">About</a>
+                <a href="#projects" class="btn-ghost">Research</a>
+                <a href="team.html" class="btn-ghost">Team</a>
             </div>
 
             <ul class="hero-stats">
@@ -780,7 +788,7 @@
                     <img src="images/I4I_logo.png" alt="Innovate for Ireland Logo">
                 </a>
                 <a href="https://aib.ie/" target="_blank" rel="noopener">
-                    <img src="images/AIB_logo.png" alt="AIB Logo">
+                    <img src="images/AIB_logo.png" alt="AIB Logo" class="logo-padded">
                 </a>
                 <a href="https://www.researchireland.ie/" target="_blank" rel="noopener">
                     <img src="images/Research_Ireland_logo.png" alt="Research Ireland Logo">
