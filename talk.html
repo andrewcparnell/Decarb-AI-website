@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Decarb-AI talk</title>
+<link rel="icon" type="image/png" href="images/Logo3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --ink: #102A24; --ink-soft: #1B3A33; --paper: #F3F5EE; --paper-dim: #E8ECE1; --line: #D7DEC9;
+    --text: #16231F; --text-muted: #55675C; --moss: #285C3B; --moss-bright: #57B37B;
+    --ember: #DB9A44; --ember-deep: #B97A2E; --white: #FFFFFF;
+    --font-display: 'Space Grotesk', -apple-system, sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #08140f; font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+#deck { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#stage { position: relative; width: 1600px; height: 900px; flex: none; overflow: hidden; }
+
+.slide {
+    position: absolute; inset: 0; padding: 80px 110px 90px;
+    opacity: 0; visibility: hidden; transform: translateX(50px);
+    transition: opacity .6s var(--ease), transform .6s var(--ease), visibility 0s linear .6s;
+}
+.slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.slide.past { transform: translateX(-50px); }
+.slide.dark { background: var(--ink); color: rgba(255,255,255,.88); }
+.slide.light { background: var(--paper); color: var(--text); }
+.slide > * { position: relative; }
+.bg-photo { position: absolute !important; inset: 0; background-size: cover; background-position: center; opacity: .55; transform: scale(1.08); }
+.bg-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(9,26,22,.35), rgba(9,20,17,.85) 70%, var(--ink)); }
+.bg-photo.dim { opacity: .3; }
+.slide.active .bg-photo { animation: kenburns 18s ease-out forwards; }
+@keyframes kenburns { to { transform: scale(1); } }
+
+/* entrance + click-by-click builds */
+.slide .anim { opacity: 0; }
+.slide.active .anim { animation: rise .8s var(--ease) both; animation-delay: calc(150ms + var(--i, 0) * 110ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+[data-step] { opacity: 0; transform: translateY(18px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+[data-step].shown { opacity: 1; transform: none; }
+
+.kicker { display: inline-flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 17px; letter-spacing: .18em; text-transform: uppercase; color: var(--moss); }
+.kicker .tick { width: 36px; height: 2px; background: currentColor; }
+.dark .kicker { color: var(--moss-bright); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; }
+h2 { font-size: 56px; line-height: 1.12; margin: 14px 0 40px; color: var(--ink); max-width: 1300px; }
+.dark h2 { color: var(--white); }
+h3 { font-size: 26px; line-height: 1.25; }
+.lead { font-size: 27px; line-height: 1.5; max-width: 1200px; margin: 0 0 36px; color: var(--text-muted); }
+.dark .lead { color: rgba(255,255,255,.75); }
+.note { font-size: 21px; color: var(--text-muted); margin: 28px 0 0; }
+.light-note { color: rgba(255,255,255,.65); }
+.mono { font-family: var(--font-mono); }
+.ico { width: 30px; height: 30px; flex: none; }
+
+/* chrome */
+#progress { position: absolute; left: 0; bottom: 0; height: 5px; width: 0; background: linear-gradient(90deg, var(--moss-bright), var(--ember)); transition: width .5s var(--ease); z-index: 10; }
+#counter { position: absolute; right: 34px; bottom: 22px; font-family: var(--font-mono); font-size: 15px; letter-spacing: .1em; color: rgba(128,140,130,.8); z-index: 10; }
+#brand { position: absolute; left: 34px; bottom: 20px; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: rgba(128,140,130,.8); z-index: 10; }
+#brand em { font-style: normal; color: var(--moss-bright); }
+#help { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: rgba(16,42,36,.92); color: #fff; font-family: var(--font-mono); font-size: 13px; letter-spacing: .04em; padding: 10px 18px; border-radius: 999px; white-space: nowrap; border: 1px solid rgba(255,255,255,.18); transition: opacity .6s ease; z-index: 50; pointer-events: none; }
+#help.gone { opacity: 0; }
+
+/* title */
+.slide.title { display: flex; align-items: center; justify-content: center; text-align: center; }
+.net { position: absolute !important; inset: 0; width: 100%; height: 100%; }
+.title-wrap { display: flex; flex-direction: column; align-items: center; }
+.logo-card { background: rgba(243,245,238,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 22px; padding: 34px 56px; width: 700px; box-shadow: 0 30px 80px rgba(0,0,0,.4); margin-bottom: 40px; }
+.logo-card img { width: 100%; display: block; }
+.slide.title h1 { font-size: 60px; color: #fff; line-height: 1.15; }
+.title-sub { font-size: 28px; color: rgba(255,255,255,.78); margin: 18px 0 0; }
+.title-who { font-family: var(--font-mono); font-size: 18px; letter-spacing: .1em; text-transform: uppercase; color: var(--ember); margin-top: 40px; }
+.title-logos { display: flex; align-items: center; gap: 44px; margin-top: 34px; background: rgba(255,255,255,.92); border-radius: 18px; padding: 14px 34px; }
+.title-logos img { height: 86px; width: auto; display: block; }
+.title-logos img.aib { height: 124px; margin: -19px -16px; }
+
+/* stats */
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.stat { background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 30px 34px; }
+.dark .stat { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.14); }
+.stat-num { font-family: var(--font-display); font-size: 76px; font-weight: 500; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.dark .stat-num { color: #fff; }
+.stat-label { font-family: var(--font-mono); font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: var(--moss); margin-top: 16px; }
+.dark .stat-label { color: var(--moss-bright); }
+.stat-sub { font-size: 20px; color: var(--text-muted); margin-top: 6px; }
+.dark .stat-sub { color: rgba(255,255,255,.6); }
+
+/* why */
+.why-grid { display: grid; grid-template-columns: 520px 1fr; gap: 70px; align-items: start; }
+.targets { display: flex; flex-direction: column; gap: 22px; }
+.target { border-left: 4px solid var(--ember); padding: 6px 0 6px 26px; font-size: 22px; color: rgba(255,255,255,.75); }
+.target .big { font-family: var(--font-display); font-size: 84px; line-height: 1; color: #fff; margin-bottom: 8px; }
+.target b { color: var(--ember); }
+.points { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 26px; }
+.points li { display: flex; gap: 20px; align-items: flex-start; font-size: 26px; line-height: 1.45; }
+.points .ico { width: 44px; height: 44px; padding: 9px; border-radius: 50%; background: rgba(87,179,123,.16); color: var(--moss-bright); }
+.points.tight { gap: 18px; } .points.tight li { font-size: 23px; } .points.tight .ico { width: 38px; height: 38px; padding: 8px; }
+
+/* pillars */
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.pillar { background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 26px 30px; border-top: 5px solid var(--moss-bright); }
+.pillar p { font-size: 21px; line-height: 1.5; color: var(--text-muted); margin: 10px 0 0; }
+.pill-ico { display: inline-flex; width: 56px; height: 56px; border-radius: 16px; align-items: center; justify-content: center; background: rgba(40,92,59,.1); color: var(--moss); margin-bottom: 18px; }
+.funders { display: flex; align-items: center; gap: 34px; margin-top: 40px; font-size: 18px; color: var(--text-muted); }
+.funders { flex-wrap: wrap; gap: 18px 60px !important; margin-top: 34px !important; }
+.funders span { flex-basis: 100%; }
+.funders img { height: 96px; width: auto; }
+.funders img[alt="AIB"] { height: 138px; margin: -21px -18px; }
+
+/* cohort diagram */
+.cm-grid { display: grid; grid-template-columns: 680px 1fr; gap: 70px; align-items: center; height: 100%; }
+.cm-diagram svg { width: 100%; height: auto; overflow: visible; }
+.cm-caps { position: relative; min-height: 170px; }
+.cm-cap { position: absolute; inset: 0; font-size: 23px; line-height: 1.5; color: var(--text-muted); border-left: 5px solid var(--c); padding-left: 24px; opacity: 0; transform: translateY(10px); transition: opacity .45s ease, transform .45s var(--ease); }
+.cm-cap b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 30px; color: var(--ink); margin-bottom: 6px; }
+.cm-cap.on { opacity: 1; transform: none; }
+.cohort-slide [data-links] { transition: opacity .4s ease; }
+.cohort-slide .focusing [data-links]:not(.on) { opacity: .12; }
+.d-inst { font-family: var(--font-mono); font-size: 8.5px; font-weight: 500; fill: #fff; }
+.d-core-small { font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .14em; fill: rgba(255,255,255,.7); }
+.d-core { font-family: var(--font-display); font-size: 17px; font-weight: 600; fill: #57B37B; }
+.d-student { transform-box: fill-box; transform-origin: center; animation: student-pulse 2.5s ease-in-out infinite; }
+@keyframes student-pulse { 50% { transform: scale(1.18); } }
+
+/* leaders */
+.leaders { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 26px; }
+.leader { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; font-size: 18px; color: rgba(255,255,255,.65); }
+.leader img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(87,179,123,.6); margin-bottom: 12px; }
+.leader b { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: #fff; }
+.leader .role { font-family: var(--font-mono); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--ember); }
+
+/* governance */
+.gov { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 26px; }
+.gov-col { background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 28px 30px; }
+.gov-col h3 { font-family: var(--font-mono); font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: var(--moss); margin-bottom: 14px; }
+.gov-row { padding: 6px 0; border-top: 1px solid var(--paper-dim); font-size: 16px; color: var(--text-muted); }
+.gov-row b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 20px; color: var(--ink); }
+.gov-col { padding: 22px 28px; }
+.gov + .note { margin-top: 18px; }
+
+/* themes */
+.themes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+.theme-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-top: 5px solid var(--accent); border-radius: 20px; padding: 26px 24px; }
+.theme-card h3 { color: #fff; font-size: 25px; margin: 6px 0 10px; }
+.theme-card p { font-size: 18px; line-height: 1.5; margin: 0; color: rgba(255,255,255,.68); }
+.theme-ico { display: inline-flex; width: 54px; height: 54px; border-radius: 50%; align-items: center; justify-content: center; background: var(--accent); color: var(--ink); margin-bottom: 18px; }
+.theme-num { display: block; font-family: var(--font-mono); font-size: 14px; letter-spacing: .16em; color: var(--accent); }
+.themes-frame { position: relative; padding: 26px 26px 132px; margin: -10px -26px 0; }
+.themes-frame .themes { position: relative; }
+.u-frame { position: absolute !important; inset: 0; border-radius: 30px; border: 2px dashed rgba(87,179,123,.75); background: rgba(87,179,123,.08); display: flex; flex-direction: column; justify-content: flex-end; padding: 0 34px 22px; }
+.u-frame.shown { transform: none; }
+.u-text { font-size: 23px; line-height: 1.45; color: rgba(255,255,255,.88); }
+.underlying { margin-top: 30px; padding: 22px 30px; border-radius: 18px; border: 1px dashed rgba(87,179,123,.6); background: rgba(87,179,123,.08); font-size: 23px; line-height: 1.5; color: rgba(255,255,255,.85); }
+.u-label { display: block; font-family: var(--font-mono); font-size: 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--moss-bright); margin-bottom: 6px; }
+
+/* themes deep dive */
+.tz-dots { display: flex; gap: 10px; margin: 18px 0 26px; }
+.tz-dot { width: 46px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.15); transition: background .4s ease; }
+.tz-dot.on { background: var(--accent); }
+.tz { position: relative; height: 620px; }
+.tz-panel { position: absolute; inset: 0; display: grid; grid-template-columns: 1.15fr 1fr; gap: 60px; align-items: center; opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .6s var(--ease); pointer-events: none;
+    border-radius: 26px; padding: 30px 46px; border: 1px solid rgba(255,255,255,.12);
+    background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 60%), rgba(255,255,255,.03); }
+.tz-panel.on { opacity: 1; transform: none; }
+.tz-scene svg { width: 100%; height: auto; overflow: visible; }
+.tz-body h3 { font-size: 46px; color: #fff; margin: 8px 0 14px; }
+.tz-body p { font-size: 22px; line-height: 1.6; color: rgba(255,255,255,.75); margin: 0 0 18px; }
+.tz-body .tz-lead { color: var(--accent); font-weight: 500; font-size: 24px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; margin: 10px 0 0; }
+.chips li { font-family: var(--font-mono); font-size: 16px; color: #fff; border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 6px 16px; border-radius: 999px; }
+
+/* scene animations (shared with the website) */
+.scene .af { fill: var(--accent); }
+.scene .as { stroke: var(--accent); }
+.svg-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; fill: rgba(255,255,255,.55); }
+.spin { animation: spin 3s linear infinite; }
+.spin-slow { animation: spin 24s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.blink { animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.glow-panel { fill-opacity: .25; stroke: var(--accent); animation: glow-panel 3s ease-in-out infinite; }
+@keyframes glow-panel { 50% { fill-opacity: .6; } }
+.glow-dot { filter: drop-shadow(0 0 4px var(--accent)); }
+.flow { stroke-dasharray: 6 10; animation: flow 1s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -16; } }
+.wave { animation: wave 6s linear infinite; }
+@keyframes wave { to { transform: translateX(-80px); } }
+.rain { animation: rain 1.8s linear infinite; opacity: 0; }
+@keyframes rain { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(80px); opacity: 0; } }
+.bob { animation: bob 3s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.sink { animation: sink 4s ease-in infinite; opacity: 0; }
+@keyframes sink { 0% { transform: translateY(-28px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(46px); opacity: 0; } }
+.rise { animation: rise-gas 4.2s ease-out infinite; opacity: 0; }
+@keyframes rise-gas { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-200px); opacity: 0; } }
+.scanline { animation: blink 2.2s ease-in-out infinite; }
+.draw { stroke-dasharray: 420; stroke-dashoffset: 420; animation: draw 6s var(--ease) infinite; }
+@keyframes draw { 0% { stroke-dashoffset: 420; } 45%, 90% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+.scan-tile { fill-opacity: .3; animation: scan-tile 4.5s ease-in-out infinite; }
+@keyframes scan-tile { 0%, 100% { fill-opacity: .3; } 12% { fill-opacity: .9; } 30% { fill-opacity: .3; } }
+.beam { fill-opacity: .14; }
+.detect { animation: detect 4.5s ease-in-out infinite; }
+@keyframes detect { 0%, 25% { opacity: 0; } 35%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.grow { transform-box: fill-box; transform-origin: 50% 100%; animation: grow 6s var(--ease) infinite; }
+@keyframes grow { 0% { transform: scaleY(0); } 30%, 88% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+.float { animation: float 4s ease-in-out infinite; }
+@keyframes float { 50% { transform: translateY(-8px); } }
+
+/* PhD equation */
+.equation { display: grid; grid-template-columns: 1fr 50px 1fr 90px 1.3fr; align-items: center; gap: 16px; margin: 6px 0 0; }
+.eq-box { display: flex; flex-direction: column; gap: 6px; background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 26px 28px; font-size: 18px; color: var(--text-muted); }
+.eq-box b { font-family: var(--font-display); font-weight: 500; font-size: 26px; color: var(--ink); }
+.eq-box .ico { width: 40px; height: 40px; color: var(--moss); margin-bottom: 6px; }
+.eq-op { font-family: var(--font-display); font-size: 60px; color: var(--ember); text-align: center; }
+.eq-arrow { width: 90px; color: var(--moss); }
+.eq-result { background: var(--ink); color: rgba(255,255,255,.8); border-radius: 22px; padding: 28px 30px; font-size: 20px; line-height: 1.45; box-shadow: 0 20px 50px rgba(16,42,36,.25); }
+.eq-result b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 28px; color: var(--moss-bright); margin-bottom: 8px; }
+.slide .eq-a, .slide .eq-b, .slide .eq-plus, .slide .eq-arrow, .slide .eq-result { opacity: 0; }
+.slide.active .eq-a { animation: from-left .8s var(--ease) .2s both; }
+.slide.active .eq-b { animation: from-right .8s var(--ease) .35s both; }
+.slide.active .eq-plus { animation: pop .6s var(--ease) .8s both; }
+.slide.active .eq-arrow { animation: from-left .6s var(--ease) 1.1s both; }
+.slide.active .eq-result { animation: pop .8s var(--ease) 1.4s both, glow 2.5s ease-in-out 2.2s infinite; }
+@keyframes from-left { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+@keyframes from-right { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes glow { 50% { box-shadow: 0 20px 60px rgba(87,179,123,.45); } }
+.checklist { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 40px; }
+.ck-title { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: var(--moss); }
+.ck { display: flex; gap: 14px; align-items: flex-start; font-size: 21px; line-height: 1.4; }
+.ck .ico { width: 30px; height: 30px; padding: 5px; border-radius: 50%; background: var(--moss-bright); color: #fff; }
+
+/* split layouts */
+.split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; }
+.photo-frame { border-radius: 26px; overflow: hidden; height: 620px; box-shadow: 0 30px 70px rgba(0,0,0,.35); }
+.photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+.slide.active .photo-frame img, .slide.active .kb img { animation: kenburns-in 14s ease-out forwards; }
+@keyframes kenburns-in { from { transform: scale(1.12); } to { transform: scale(1); } }
+.sem-note { font-family: var(--font-display); font-size: 24px; color: var(--ember); margin: 14px 0 0; }
+.semester { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 34px; font-family: var(--font-mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.6); position: relative; padding-top: 18px; }
+.sem-bar { position: absolute; left: 0; right: 0; top: 0; height: 8px; border-radius: 4px; background: rgba(255,255,255,.12); overflow: hidden; }
+.sem-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--moss-bright), var(--ember)); transform-origin: left; transform: scaleX(0); }
+.slide.active .sem-bar i { animation: fill 2.6s var(--ease) .9s forwards; }
+@keyframes fill { to { transform: scaleX(1); } }
+
+/* mosaic */
+.mosaic { display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 168px 168px; gap: 14px; }
+.mosaic > div { border-radius: 20px; overflow: hidden; }
+.mosaic img { width: 100%; height: 100%; object-fit: cover; }
+.m1 { grid-row: 1 / 3; }
+.m2 { grid-column: 2 / 4; }
+.logo-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 26px; }
+.logo-row img { width: 100%; height: 150px; object-fit: contain; background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 18px 26px; }
+.logo-row img[alt="EUMETSAT"], .logo-row img[alt="Google Earth AI"] { padding: 0; object-fit: cover; background: #102A24; }
+
+/* iScholars */
+.scholar-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-bottom: 36px; }
+.scholar-stats .stat { padding: 24px 28px; }
+.scholar-stats .stat-num { font-size: 64px; }
+.wall { display: flex; flex-wrap: wrap; gap: 14px; }
+.wall-face { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,.15); opacity: 0; transform: scale(.4); }
+.slide.active .wall-face { animation: pop .6s var(--ease) both; animation-delay: calc(700ms + var(--i) * 70ms); }
+
+.c1 { display: flex; flex-direction: column; gap: 7px; margin-top: -14px; }
+.c1-row { display: grid; grid-template-columns: 46px 290px 1fr 330px; gap: 22px; align-items: center; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 6px 18px; font-size: 17px; }
+.c1-row .face { width: 46px; height: 46px; }
+.face { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; }
+.face.initials { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--ink-soft), var(--moss)); color: #fff; font-family: var(--font-display); font-size: 20px; }
+.c1-who b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 21px; color: var(--ink); }
+.c1-who span, .c1-sup { color: var(--text-muted); font-size: 16px; }
+.c1-proj { color: var(--text); line-height: 1.35; }
+.c1-sup { font-family: var(--font-mono); font-size: 14px; }
+
+.c2-grid { display: grid; grid-template-columns: 1fr 360px; gap: 34px; align-items: start; }
+.c2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: -10px; }
+.c2-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 12px 10px; }
+.c2-card .face { width: 56px; height: 56px; margin-bottom: 4px; }
+.c2-card b { font-family: var(--font-display); font-weight: 500; font-size: 17px; color: var(--ink); line-height: 1.2; }
+.c2-inst { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--moss); }
+.c2-sup { font-size: 14px; color: var(--text-muted); }
+.c2-sup.tbc { color: var(--ember-deep); font-style: italic; }
+.stand { background: var(--ink); color: rgba(255,255,255,.8); border-radius: 22px; padding: 30px; }
+.stand h3 { color: #fff; margin-bottom: 14px; }
+.stand p { font-size: 20px; line-height: 1.5; margin: 0 0 14px; padding-left: 18px; border-left: 3px solid var(--moss-bright); }
+
+/* entrepreneurship */
+.sandbox { background: linear-gradient(135deg, rgba(87,179,123,.2), rgba(219,154,68,.18)); border: 1px solid rgba(255,255,255,.2); border-radius: 26px; padding: 38px; }
+.sandbox h3 { color: #fff; font-size: 34px; margin: 14px 0 10px; }
+.sandbox p { font-size: 22px; margin: 0 0 18px; }
+.badge { display: inline-block; font-family: var(--font-mono); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; background: var(--ember); color: var(--ink); padding: 5px 14px; border-radius: 999px; }
+.url { font-family: var(--font-mono); font-size: 15px; color: rgba(255,255,255,.6); }
+
+/* internships */
+.big-stat { font-family: var(--font-display); font-size: 40px; color: var(--text-muted); margin-bottom: 18px; }
+.big-stat span { font-size: 120px; color: var(--ink); line-height: 1; }
+.galetech { height: 130px; width: auto; margin-top: 8px; }
+.intern-photos { position: relative; height: 640px; }
+.intern-photos img { position: absolute; object-fit: cover; border-radius: 20px; box-shadow: 0 24px 60px rgba(16,42,36,.25); border: 6px solid #fff; }
+.ip1 { width: 360px; height: 300px; left: 0; top: 10px; transform: rotate(-3deg); }
+.ip2 { width: 420px; height: 260px; right: 0; top: 190px; transform: rotate(2deg); }
+.ip3 { width: 300px; height: 300px; left: 60px; bottom: 0; transform: rotate(-1deg); }
+.slide.active .intern-photos img { animation-name: drop-in; }
+@keyframes drop-in { from { opacity: 0; translate: 0 -40px; } to { opacity: 1; translate: 0 0; } }
+
+/* funding */
+.funding { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 28px; margin-top: 30px; }
+.fund { border-radius: 26px; padding: 40px 38px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); }
+.fund:first-child { background: linear-gradient(135deg, rgba(87,179,123,.28), rgba(87,179,123,.06)); border-color: rgba(87,179,123,.6); }
+.fund-num { font-family: var(--font-display); font-size: 110px; font-weight: 500; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.fund:first-child .fund-num { font-size: 140px; color: var(--moss-bright); }
+.fund p { font-size: 24px; color: rgba(255,255,255,.72); margin: 18px 0 0; }
+
+/* events */
+.events { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.event { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 30px 26px; min-height: 330px; }
+.event:first-child { background: var(--ink); color: rgba(255,255,255,.75); }
+.event:first-child h3 { color: #fff; }
+.event h3 { margin: 16px 0 10px; }
+.event p { font-size: 20px; line-height: 1.5; margin: 0; color: inherit; }
+.ev-ico { display: inline-flex; width: 56px; height: 56px; border-radius: 16px; align-items: center; justify-content: center; background: rgba(87,179,123,.18); color: var(--moss); }
+.event:first-child .ev-ico { color: var(--moss-bright); }
+.ev-date { position: absolute; top: 22px; right: 22px; font-family: var(--font-mono); font-size: 14px; letter-spacing: .08em; background: var(--ember); color: var(--ink); padding: 4px 12px; border-radius: 999px; }
+
+/* timeline */
+.timeline { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 20px; }
+.tl-line { position: absolute; left: 30px; right: 30px; top: 30px; height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; }
+.tl-line i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--moss-bright), var(--ember)); transform-origin: left; transform: scaleX(var(--tl, 0)); transition: transform .7s var(--ease); }
+.tl-step { position: relative; }
+.tl-dot { display: flex; width: 62px; height: 62px; border-radius: 50%; align-items: center; justify-content: center; background: var(--ink); border: 3px solid var(--moss-bright); font-family: var(--font-display); font-size: 26px; color: #fff; margin-bottom: 22px; }
+.tl-date { display: block; font-family: var(--font-mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--ember); margin-bottom: 8px; }
+.tl-step h3 { color: #fff; margin-bottom: 8px; }
+.tl-step p { font-size: 20px; line-height: 1.5; margin: 0; color: rgba(255,255,255,.7); }
+
+/* thanks */
+.thanks { display: grid; grid-template-columns: 1fr 340px; gap: 80px; align-items: center; text-align: left; width: 100%; }
+.thanks h1 { font-size: 120px; color: #fff; }
+.thanks .mono { font-size: 24px; color: var(--moss-bright); }
+.ack { font-size: 17px; line-height: 1.5; color: rgba(255,255,255,.55); max-width: 820px; margin-top: 40px; font-style: italic; }
+.qr-card { background: #fff; border-radius: 26px; padding: 26px; display: flex; flex-direction: column; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 18px; color: var(--ink); }
+#qr { width: 260px; height: 260px; display: flex; align-items: center; justify-content: center; }
+#qr img, #qr canvas { width: 260px !important; height: 260px !important; }
+
+/* iScholar spotlight */
+.spots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.spot-card { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 24px; padding: 24px 28px 26px; overflow: hidden;
+    background: radial-gradient(90% 60% at 50% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), var(--white); }
+.spot-photo { position: relative; width: 124px; height: 124px; margin-bottom: 14px; }
+.spot-photo img { position: absolute; inset: 8px; width: 108px; height: 108px; border-radius: 50%; object-fit: cover; }
+.spot-photo svg { position: absolute; inset: 0; width: 124px; height: 124px; animation: spin 18s linear infinite; }
+.spot-theme { display: inline-block; font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); background: color-mix(in srgb, var(--accent) 45%, white); padding: 4px 12px; border-radius: 999px; }
+.spot-card h3 { font-size: 30px; color: var(--ink); margin: 12px 0 2px; }
+.spot-inst { font-size: 17px; color: var(--text-muted); }
+.spot-proj { font-family: var(--font-display); font-weight: 500; font-size: 21px; line-height: 1.3; color: var(--moss); margin: 12px 0 8px; }
+.spot-blurb { font-size: 17px; line-height: 1.5; color: var(--text); margin: 0; }
+.spot-card[data-step] { transform: translateY(40px); }
+.spot-card.shown { transform: none; }
+
+/* training: drone-style camera move, or real footage if talk/ucd.mp4 exists */
+.photo-frame.drone { position: relative; }
+.photo-frame.drone video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease; }
+.photo-frame.drone.has-video video { opacity: 1; }
+.slide.active .photo-frame.drone img { animation: drone 16s cubic-bezier(.3,.1,.3,1) forwards; }
+@keyframes drone { from { transform: scale(1.4) translate(6%, 5%) rotate(-1.5deg); } to { transform: scale(1.06) translate(-2%, -1%) rotate(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .slide, .slide * { animation-duration: .01s !important; animation-delay: 0s !important; transition-duration: .01s !important; }
+}
+</style>
+</head>
+<body>
+<!-- Unlinked presentation deck. Keys: arrows / space / clicker to advance, F for fullscreen, Home/End, #n in the URL jumps to slide n. -->
+<div id="deck"><div id="stage">
+<section class="slide dark title" data-kind="title" aria-label="Slide 1">
+        <div class="bg-photo" style="background-image:url(talk/wind.jpg)"></div>
+        <canvas class="net"></canvas>
+        <div class="title-wrap">
+            <div class="logo-card anim"><img src="images/Logo1.png" alt="Decarb-AI"></div>
+            <h1 class="anim" style="--i:1">AI-Powered Pathways to Climate Resilience</h1>
+            <p class="title-sub anim" style="--i:2">The first Innovate for Ireland National Centre</p>
+            <p class="title-who anim" style="--i:3">Prof. Andrew Parnell &middot; Director &middot; University College Dublin</p>
+            <div class="title-logos anim" style="--i:4"><img src="images/I4I_logo.png" alt="Innovate for Ireland"><img class="aib" src="images/AIB_logo.png" alt="AIB"><img src="images/Research_Ireland_logo.png" alt="Research Ireland"></div>
+        </div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 2">
+        <div class="kicker anim"><span class="tick"></span>Decarb-AI at a glance</div>
+        <h2 class="anim">A national centre for AI and climate</h2>
+        <div class="stat-grid">
+            <div class="stat anim" style="--i:1"><div class="stat-num">€<span data-count="5.7" data-decimals="1">5.7</span>m</div><div class="stat-label">National centre</div><div class=stat-sub>funded by Research Ireland and AIB</div></div>
+            <div class="stat anim" style="--i:2"><div class="stat-num"><span data-count="30" data-decimals="0">30</span></div><div class="stat-label">PhD iScholars</div><div class=stat-sub>across three cohorts</div></div>
+            <div class="stat anim" style="--i:3"><div class="stat-num"><span data-count="7" data-decimals="0">7</span></div><div class="stat-label">Partner institutions</div><div class=stat-sub>led by UCD</div></div>
+            <div class="stat anim" style="--i:4"><div class="stat-num">~<span data-count="75" data-decimals="0">75</span></div><div class="stat-label">Supervisors</div><div class=stat-sub>across Ireland</div></div>
+            <div class="stat anim" style="--i:5"><div class="stat-num"><span data-count="4" data-decimals="0">4</span> yrs</div><div class="stat-label">Fully funded PhDs</div><div class=stat-sub>with a €31k stipend</div></div>
+            <div class="stat anim" style="--i:6"><div class="stat-num"><span data-count="18" data-decimals="0">18</span></div><div class="stat-label">iScholars recruited so far</div><div class=stat-sub>53% female</div></div>
+        </div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 3">
+        <div class="bg-photo dim" style="background-image:url(talk/lake.jpg)"></div>
+        <div class="kicker anim"><span class="tick"></span>Why AI for decarbonisation?</div>
+        <h2 class="anim">The challenge, and the opportunity</h2>
+        <div class="why-grid">
+            <div class="targets">
+                <div class="target anim" style="--i:1"><div class="big"><span data-count="51">51</span>%</div><div>cut in greenhouse gas emissions by <b>2030</b></div></div>
+                <div class="target anim" style="--i:2"><div class="big">Net&nbsp;zero</div><div>by <b>2050</b>: Ireland’s legal targets</div></div>
+            </div>
+            <ul class="points">
+                <li data-step="1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16a5 5 0 1 1 1-9.9A6 6 0 0 1 19 9a4 4 0 0 1-1 7.9"/><path d="M12 13l-2 4h4l-2 4"/></svg><span>Extreme weather (floods, droughts and storms) is already hitting homes, farms and infrastructure</span></li>
+                <li data-step="2"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="7" rx="1.5"/><rect x="4" y="14" width="16" height="7" rx="1.5"/><circle cx="8" cy="6.5" r=".8"/><circle cx="8" cy="17.5" r=".8"/></svg><span>Datacentres are a growing share of Irish electricity demand</span></li>
+                <li data-step="3"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="M16 8l-1.5 1.5"/><path d="M3 21c0-3 2-5 5-5"/></svg><span>AI, computing and data from satellites and sensors now allow a step change in monitoring, forecasting and planning</span></li>
+                <li data-step="4"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg><span>People with these skills are needed to lead the green transition</span></li>
+            </ul>
+        </div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 4">
+        <div class="kicker anim"><span class="tick"></span>Part of Innovate for Ireland</div>
+        <h2 class="anim">Training entrepreneurial research leaders</h2>
+        <p class="lead anim" style="--i:1">Decarb-AI is the first national centre in Innovate for Ireland, a partnership between the State and the private sector that trains PhD “iScholars” to become entrepreneurial research leaders.</p>
+        <div class="pillars"><div class="pillar" data-step="1"><span class="pill-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span><h3>PhD research</h3><p>A four-year PhD on an agreed project, embedded in an excellent research environment</p></div><div class="pillar" data-step="2"><span class="pill-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.5-2 4-2 6 2 0 4.5-.5 6-2"/><path d="M9 15l-3-3a12 12 0 0 1 12-9 12 12 0 0 1-9 12z"/><circle cx="15" cy="9" r="1.5"/></svg></span><h3>Leadership &amp; innovation</h3><p>The Entrepreneurial, Leadership &amp; Innovation (ELI) programme, run with Global Innovators Ireland</p></div><div class="pillar" data-step="3"><span class="pill-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><line x1="7.5" y1="7.5" x2="10.7" y2="17"/><line x1="16.5" y1="7.5" x2="13.3" y2="17"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg></span><h3>Innovation ecosystem</h3><p>A national network of iScholars, industry, government and other Innovate for Ireland centres</p></div></div>
+        <div class="funders anim" style="--i:3"><span>Funded by Research Ireland and AIB, supported by Global Innovators Ireland</span>
+            <img src="images/Research_Ireland_logo.png" alt="Research Ireland"><img src="images/AIB_logo.png" alt="AIB"><img src="images/I4I_logo.png" alt="Innovate for Ireland"></div>
+</section>
+<section class="slide light cohort-slide" data-kind="cohort" aria-label="Slide 5">
+        <div class="cm-grid">
+            <div class="cm-diagram anim"><svg viewBox="64 2 392 376" role="img" aria-label="Diagram: a cohort of iScholars linked to each other, to supervisors and to seven partner institutions, all around a core of frontier AI">
+            <path data-links="ai" d="M260.0 190.0 L260.0 110.0" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L307.0 125.3" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L336.1 165.3" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L336.1 214.7" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L307.0 254.7" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L260.0 270.0" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L213.0 254.7" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L183.9 214.7" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L183.9 165.3" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <path data-links="ai" d="M260.0 190.0 L213.0 125.3" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
+            <circle data-links="ai" r="3" fill="#57B37B"><animateMotion dur="2.2s" begin="0.00s" repeatCount="indefinite" path="M260.0 190.0 L260.0 110.0"/></circle>
+            <circle data-links="ai" r="3" fill="#57B37B"><animateMotion dur="2.2s" begin="-0.55s" repeatCount="indefinite" path="M260.0 190.0 L336.1 214.7"/></circle>
+            <circle data-links="ai" r="3" fill="#57B37B"><animateMotion dur="2.2s" begin="-1.10s" repeatCount="indefinite" path="M260.0 190.0 L213.0 254.7"/></circle>
+            <circle data-links="ai" r="3" fill="#57B37B"><animateMotion dur="2.2s" begin="-1.65s" repeatCount="indefinite" path="M260.0 190.0 L183.9 165.3"/></circle>
+            <path data-links="institutions" d="M332.9 38.6 L315.5 74.7" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M423.8 152.6 L384.8 161.5" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M391.3 294.7 L360.1 269.8" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M260.0 358.0 L260.0 318.0" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M128.7 294.7 L159.9 269.8" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M96.2 152.6 L135.2 161.5" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="institutions" d="M187.1 38.6 L204.5 74.7" stroke="#3FA7B3" stroke-opacity=".5" stroke-width="1.5"/>
+            <path data-links="supervisors" d="M315.5 74.7 L307.0 125.3" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M315.5 74.7 L260.0 110.0" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M315.5 74.7 Q260 190 260.0 270.0" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M384.8 161.5 L336.1 165.3" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M384.8 161.5 L336.1 214.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M384.8 161.5 Q260 190 213.0 254.7" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M360.1 269.8 L307.0 254.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M360.1 269.8 L336.1 214.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M360.1 269.8 Q260 190 183.9 165.3" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M260.0 318.0 L260.0 270.0" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M260.0 318.0 L213.0 254.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M260.0 318.0 Q260 190 213.0 125.3" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M159.9 269.8 L213.0 254.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M159.9 269.8 L183.9 214.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M159.9 269.8 Q260 190 260.0 110.0" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M135.2 161.5 L183.9 165.3" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M135.2 161.5 L183.9 214.7" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M135.2 161.5 Q260 190 336.1 165.3" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="supervisors" d="M204.5 74.7 L213.0 125.3" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M204.5 74.7 L260.0 110.0" stroke="#8C7BD6" stroke-opacity=".45" stroke-width="1.3"/>
+            <path data-links="supervisors" d="M204.5 74.7 Q260 190 336.1 214.7" fill="none" stroke="#8C7BD6" stroke-opacity=".25" stroke-width="1" stroke-dasharray="3 4"/>
+            <path data-links="cohort" d="M260.0 110.0 L307.0 125.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M307.0 125.3 L336.1 165.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M336.1 165.3 L336.1 214.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M336.1 214.7 L307.0 254.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M307.0 254.7 L260.0 270.0" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M260.0 270.0 L213.0 254.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M213.0 254.7 L183.9 214.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M183.9 214.7 L183.9 165.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M183.9 165.3 L213.0 125.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M213.0 125.3 L260.0 110.0" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M260.0 110.0 L336.1 214.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M336.1 165.3 L260.0 270.0" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M307.0 254.7 L183.9 214.7" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M213.0 254.7 L213.0 125.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <path data-links="cohort" d="M183.9 165.3 L307.0 125.3" stroke="#DB9A44" stroke-opacity=".55" stroke-width="1.6"/>
+            <circle data-links="cohort" r="3.2" fill="#DB9A44"><animateMotion dur="1.8s" begin="0.00s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M260.0 110.0 L307.0 125.3"/></circle>
+            <circle data-links="cohort" r="3.2" fill="#DB9A44"><animateMotion dur="1.8s" begin="-0.45s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M336.1 214.7 L307.0 254.7"/></circle>
+            <circle data-links="cohort" r="3.2" fill="#DB9A44"><animateMotion dur="1.8s" begin="-0.90s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M213.0 254.7 L183.9 214.7"/></circle>
+            <circle data-links="cohort" r="3.2" fill="#DB9A44"><animateMotion dur="1.8s" begin="-1.35s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M213.0 125.3 L260.0 110.0"/></circle>
+            <circle data-links="cohort" r="3.2" fill="#DB9A44"><animateMotion dur="1.8s" begin="-1.80s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M307.0 254.7 L183.9 214.7"/></circle>
+            <g class="d-node" data-key="supervisors" data-links="supervisors institutions"><circle cx="315.5" cy="74.7" r="7" fill="#8C7BD6"/><circle cx="384.8" cy="161.5" r="7" fill="#8C7BD6"/><circle cx="360.1" cy="269.8" r="7" fill="#8C7BD6"/><circle cx="260.0" cy="318.0" r="7" fill="#8C7BD6"/><circle cx="159.9" cy="269.8" r="7" fill="#8C7BD6"/><circle cx="135.2" cy="161.5" r="7" fill="#8C7BD6"/><circle cx="204.5" cy="74.7" r="7" fill="#8C7BD6"/></g>
+            <g class="d-node" data-key="institutions" data-links="institutions"><circle cx="332.9" cy="38.6" r="18" fill="#3FA7B3"/><text x="332.9" y="41.6" text-anchor="middle" class="d-inst">UCD</text><circle cx="423.8" cy="152.6" r="18" fill="#3FA7B3"/><text x="423.8" y="155.6" text-anchor="middle" class="d-inst">TCD</text><circle cx="391.3" cy="294.7" r="18" fill="#3FA7B3"/><text x="391.3" y="297.7" text-anchor="middle" class="d-inst">DCU</text><circle cx="260.0" cy="358.0" r="18" fill="#3FA7B3"/><text x="260.0" y="361.0" text-anchor="middle" class="d-inst">TUD</text><circle cx="128.7" cy="294.7" r="18" fill="#3FA7B3"/><text x="128.7" y="297.7" text-anchor="middle" class="d-inst">UL</text><circle cx="96.2" cy="152.6" r="18" fill="#3FA7B3"/><text x="96.2" y="155.6" text-anchor="middle" class="d-inst">UCC</text><circle cx="187.1" cy="38.6" r="18" fill="#3FA7B3"/><text x="187.1" y="41.6" text-anchor="middle" class="d-inst">ICHEC</text></g>
+            <g class="d-node" data-key="cohort" data-links="cohort supervisors ai"><circle cx="260.0" cy="110.0" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:0.00s"/><circle cx="307.0" cy="125.3" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:0.25s"/><circle cx="336.1" cy="165.3" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:0.50s"/><circle cx="336.1" cy="214.7" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:0.75s"/><circle cx="307.0" cy="254.7" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:1.00s"/><circle cx="260.0" cy="270.0" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:1.25s"/><circle cx="213.0" cy="254.7" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:1.50s"/><circle cx="183.9" cy="214.7" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:1.75s"/><circle cx="183.9" cy="165.3" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:2.00s"/><circle cx="213.0" cy="125.3" r="8.5" fill="#DB9A44" stroke="#fff" stroke-width="2" class="d-student" style="animation-delay:2.25s"/></g>
+            <g class="d-node" data-key="ai" data-links="ai">
+            <circle cx="260" cy="190" r="40" fill="none" stroke="#57B37B" stroke-width="1.5" stroke-dasharray="4 6" class="spin-slow" style="transform-origin:260px 190px"/>
+            <circle cx="260" cy="190" r="31" fill="#102A24"/>
+            <text x="260" y="187" text-anchor="middle" class="d-core-small">FRONTIER</text>
+            <text x="260" y="203" text-anchor="middle" class="d-core">AI</text>
+        </g>
+        </svg></div>
+            <div>
+                <div class="kicker anim"><span class="tick"></span>How the centre works</div>
+                <h2 class="anim">The magic is in the mix</h2>
+                <p class="lead anim" style="--i:1">iScholars don’t work in isolation. The cohort, their supervisors, our institutions and frontier AI combine to turn separate PhDs into a national centre.</p>
+                <div class="cm-caps"><div class="cm-cap" data-key="cohort" style="--c:#DB9A44"><b>The cohort</b>iScholars train together, starting with a three-month programme in AI, decarbonisation and high-performance computing, and keep learning from each other across disciplines and institutions.</div><div class="cm-cap" data-key="supervisors" style="--c:#8C7BD6"><b>Supervisors</b>Leading academics from every partner institution guide each project, with many co-supervised across disciplines and universities.</div><div class="cm-cap" data-key="institutions" style="--c:#3FA7B3"><b>Institutions</b>Seven partners, from universities to ICHEC, Ireland’s national high-performance computing centre, open up their expertise, facilities and networks to every iScholar.</div><div class="cm-cap" data-key="ai" style="--c:#57B37B"><b>Frontier AI</b>From AI weather models like ECMWF’s Anemoi to physics-informed neural networks and large language models, applied to real climate problems.</div></div>
+            </div>
+        </div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 6">
+        <div class="kicker anim"><span class="tick"></span>The leadership team</div>
+        <h2 class="anim">Principal Investigators across seven partners</h2>
+        <div class="leaders"><div class="leader anim" style="--i:0"><img src="photos/andrew_parnell.png" alt=""><b>Andrew Parnell</b><span class="role">Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:1"><img src="photos/fiachra_oloughlin.png" alt=""><b>Fiachra O’Loughlin</b><span class="role">Deputy Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:2"><img src="photos/fiona_regan.png" alt=""><b>Fiona Regan</b><span class="role">Principal Investigator</span><span>Dublin City University</span></div><div class="leader anim" style="--i:3"><img src="photos/ian_donohue.png" alt=""><b>Ian Donohue</b><span class="role">Principal Investigator</span><span>Trinity College Dublin</span></div><div class="leader anim" style="--i:4"><img src="photos/dympna_osullivan.png" alt=""><b>Dympna O’Sullivan</b><span class="role">Principal Investigator</span><span>TU Dublin</span></div><div class="leader anim" style="--i:5"><img src="photos/jean_odwyer.png" alt=""><b>Jean O’Dwyer</b><span class="role">Principal Investigator</span><span>University College Cork</span></div><div class="leader anim" style="--i:6"><img src="photos/ken_byrne.png" alt=""><b>Ken Byrne</b><span class="role">Principal Investigator</span><span>University of Limerick</span></div><div class="leader anim" style="--i:7"><img src="photos/venkatesh_kannan.png" alt=""><b>Venkatesh Kannan</b><span class="role">Principal Investigator</span><span>ICHEC</span></div></div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 7">
+        <div class="kicker anim"><span class="tick"></span>Research</div>
+        <h2 class="anim">Five research themes</h2>
+        <div class="themes-frame">
+        <div class="u-frame" data-step="1"><span class="u-label">Underlying theme</span><span class="u-text">Transparent AI decision-support for real-time decarbonisation planning, and green, energy-efficient high-performance computing</span></div>
+        <div class="themes"><div class="theme-card anim" style="--i:1;--accent:#F2B544"><span class="theme-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></span><span class="theme-num">01</span><h3>Energy resources</h3><p>AI-optimised renewable energy systems and datacentre sustainability.</p></div><div class="theme-card anim" style="--i:2;--accent:#4FB8C4"><span class="theme-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2s7 8.5 7 13.5A7 7 0 1 1 5 15.5C5 10.5 12 2 12 2z"/></svg></span><span class="theme-num">02</span><h3>Water security</h3><p>Machine learning for water quality forecasting and flood and drought risk.</p></div><div class="theme-card anim" style="--i:3;--accent:#6CC77A"><span class="theme-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span><span class="theme-num">03</span><h3>Land management</h3><p>Peatland restoration, earth observation and biodiversity for land-use policy.</p></div><div class="theme-card anim" style="--i:4;--accent:#F28A6B"><span class="theme-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><circle cx="12" cy="18" r="1.5"/></svg></span><span class="theme-num">04</span><h3>Emissions measurement</h3><p>Sensors and physics-informed AI for greenhouse gas accounting.</p></div><div class="theme-card anim" style="--i:5;--accent:#A797F0"><span class="theme-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3,17 9,11 13,15 21,5"/><polyline points="15,5 21,5 21,11"/></svg></span><span class="theme-num">05</span><h3>Sustainable finance</h3><p>AI-supported sustainable finance and climate risk tools for SMEs.</p></div></div>
+        </div>
+</section>
+<section class="slide dark themes-slide" data-kind="themes" aria-label="Slide 8">
+        <div class="kicker anim"><span class="tick"></span>Research themes in action</div>
+        <div class="tz-dots anim"><span class="tz-dot on" style="--accent:#F2B544"></span><span class="tz-dot" style="--accent:#4FB8C4"></span><span class="tz-dot" style="--accent:#6CC77A"></span><span class="tz-dot" style="--accent:#F28A6B"></span><span class="tz-dot" style="--accent:#A797F0"></span></div>
+        <div class="tz anim" style="--i:1"><div class="tz-panel on" style="--accent:#F2B544">
+            <div class="tz-scene scene"><svg viewBox="0 0 480 320" role="img" aria-label="Animation: wind turbines and solar panels sending power along the grid to a data centre">
+    <g class="spin-slow as" stroke-width="3" stroke-linecap="round" style="transform-origin:410px 64px"><line x1="440.0" y1="64.0" x2="450.0" y2="64.0"/><line x1="431.2" y1="85.2" x2="438.3" y2="92.3"/><line x1="410.0" y1="94.0" x2="410.0" y2="104.0"/><line x1="388.8" y1="85.2" x2="381.7" y2="92.3"/><line x1="380.0" y1="64.0" x2="370.0" y2="64.0"/><line x1="388.8" y1="42.8" x2="381.7" y2="35.7"/><line x1="410.0" y1="34.0" x2="410.0" y2="24.0"/><line x1="431.2" y1="42.8" x2="438.3" y2="35.7"/></g>
+    <circle cx="410" cy="64" r="21" class="af"/>
+    <path d="M0 262 Q110 222 230 250 T480 244 V320 H0Z" fill="#fff" fill-opacity=".05"/>
+    <polygon points="77,262 79,118 81,118 83,262" fill="#fff" fill-opacity=".8"/><g class="spin" style="transform-origin:80px 118px;animation-duration:3.2s" fill="#fff" fill-opacity=".92"><path transform="rotate(0 80 118)" d="M80 118 C74 104 76 78 80 70 C83 82 83 104 80 118Z"/><path transform="rotate(120 80 118)" d="M80 118 C74 104 76 78 80 70 C83 82 83 104 80 118Z"/><path transform="rotate(240 80 118)" d="M80 118 C74 104 76 78 80 70 C83 82 83 104 80 118Z"/></g><circle cx="80" cy="118" r="3.5" class="af"/>
+    <polygon points="147,258 149,152 151,152 153,258" fill="#fff" fill-opacity=".8"/><g class="spin" style="transform-origin:150px 152px;animation-duration:2.5s" fill="#fff" fill-opacity=".92"><path transform="rotate(0 150 152)" d="M150 152 C144 138 146 122 150 114 C153 126 153 138 150 152Z"/><path transform="rotate(120 150 152)" d="M150 152 C144 138 146 122 150 114 C153 126 153 138 150 152Z"/><path transform="rotate(240 150 152)" d="M150 152 C144 138 146 122 150 114 C153 126 153 138 150 152Z"/></g><circle cx="150" cy="152" r="3.5" class="af"/>
+    <polygon points="212,252 214,128 216,128 218,252" fill="#fff" fill-opacity=".8"/><g class="spin" style="transform-origin:215px 128px;animation-duration:3.8s" fill="#fff" fill-opacity=".92"><path transform="rotate(0 215 128)" d="M215 128 C209 114 211 92 215 84 C218 96 218 114 215 128Z"/><path transform="rotate(120 215 128)" d="M215 128 C209 114 211 92 215 84 C218 96 218 114 215 128Z"/><path transform="rotate(240 215 128)" d="M215 128 C209 114 211 92 215 84 C218 96 218 114 215 128Z"/></g><circle cx="215" cy="128" r="3.5" class="af"/>
+    <polygon points="252,258 268,234 310,234 294,258" class="af glow-panel" stroke-width="1.5"/>
+    <polygon points="298,258 314,234 356,234 340,258" class="af glow-panel" stroke-width="1.5" style="animation-delay:.8s"/>
+    <rect x="388" y="150" width="68" height="108" rx="7" fill="#fff" fill-opacity=".07" stroke="#fff" stroke-opacity=".35"/>
+    <rect x="398" y="166" width="48" height="13" rx="2" fill="#fff" fill-opacity=".1"/><circle cx="405" cy="172.5" r="2.2" class="af blink" style="animation-delay:0.00s"/><circle cx="413" cy="172.5" r="2.2" class="af blink" style="animation-delay:0.23s"/><circle cx="421" cy="172.5" r="2.2" class="af blink" style="animation-delay:0.46s"/><rect x="398" y="190" width="48" height="13" rx="2" fill="#fff" fill-opacity=".1"/><circle cx="405" cy="196.5" r="2.2" class="af blink" style="animation-delay:0.69s"/><circle cx="413" cy="196.5" r="2.2" class="af blink" style="animation-delay:0.92s"/><circle cx="421" cy="196.5" r="2.2" class="af blink" style="animation-delay:1.15s"/><rect x="398" y="214" width="48" height="13" rx="2" fill="#fff" fill-opacity=".1"/><circle cx="405" cy="220.5" r="2.2" class="af blink" style="animation-delay:1.38s"/><circle cx="413" cy="220.5" r="2.2" class="af blink" style="animation-delay:0.01s"/><circle cx="421" cy="220.5" r="2.2" class="af blink" style="animation-delay:0.24s"/><rect x="398" y="238" width="48" height="13" rx="2" fill="#fff" fill-opacity=".1"/><circle cx="405" cy="244.5" r="2.2" class="af blink" style="animation-delay:0.47s"/><circle cx="413" cy="244.5" r="2.2" class="af blink" style="animation-delay:0.70s"/><circle cx="421" cy="244.5" r="2.2" class="af blink" style="animation-delay:0.93s"/>
+    <text x="422" y="144" text-anchor="middle" class="svg-label">DATA CENTRE</text>
+    <path id="e-wire" d="M80 262 C120 284 180 282 215 252 S300 282 330 258 S380 266 422 258" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2"/>
+    <path d="M80 262 C120 284 180 282 215 252 S300 282 330 258 S380 266 422 258" fill="none" class="as flow" stroke-width="2"/>
+    <circle r="4.5" class="af glow-dot"><animateMotion dur="3.6s" repeatCount="indefinite" begin="0s"><mpath href="#e-wire"/></animateMotion></circle><circle r="4.5" class="af glow-dot"><animateMotion dur="3.6s" repeatCount="indefinite" begin="-1.2s"><mpath href="#e-wire"/></animateMotion></circle><circle r="4.5" class="af glow-dot"><animateMotion dur="3.6s" repeatCount="indefinite" begin="-2.4s"><mpath href="#e-wire"/></animateMotion></circle>
+</svg></div>
+            <div class="tz-body"><span class="theme-num">THEME 01</span><h3>Energy resources</h3><p class="tz-lead">AI-optimised renewable energy systems and datacentre sustainability.</p><p>Machine learning for load balancing, grid integration of wind and solar, and the thermal management of national data infrastructure: forecasting grid surges and cutting curtailment losses.</p>
+            <ul class="chips"><li>Load forecasting</li><li>Grid integration</li><li>Offshore wind</li><li>Data-centre cooling</li></ul></div></div><div class="tz-panel" style="--accent:#4FB8C4">
+            <div class="tz-scene scene"><svg viewBox="0 0 480 320" role="img" aria-label="Animation: a sensor buoy monitoring a river while carbon is stored in peatland below">
+    <defs><clipPath id="env-river"><path d="M0 165 C120 150 200 190 300 175 S430 160 480 170 V215 C420 205 330 222 240 215 S80 200 0 210Z"/></clipPath></defs>
+    <g fill="#fff" fill-opacity=".16"><ellipse cx="80" cy="50" rx="28" ry="15"/><ellipse cx="104" cy="44" rx="22" ry="18"/><ellipse cx="124" cy="54" rx="20" ry="12"/></g>
+    <line x1="70" y1="70" x2="68" y2="78" class="as rain" stroke-width="2" stroke-linecap="round" style="animation-delay:0s"/><line x1="88" y1="70" x2="86" y2="78" class="as rain" stroke-width="2" stroke-linecap="round" style="animation-delay:0.5s"/><line x1="106" y1="70" x2="104" y2="78" class="as rain" stroke-width="2" stroke-linecap="round" style="animation-delay:1.0s"/><line x1="124" y1="70" x2="122" y2="78" class="as rain" stroke-width="2" stroke-linecap="round" style="animation-delay:0.25s"/><line x1="96" y1="70" x2="94" y2="78" class="as rain" stroke-width="2" stroke-linecap="round" style="animation-delay:1.3s"/>
+    <rect x="352" y="22" width="108" height="58" rx="9" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".2"/>
+    <text x="362" y="39" class="svg-label">WATER QUALITY</text>
+    <polyline points="362,68 374,62 386,66 398,54 410,58 422,47 434,51 448,43" fill="none" class="as draw" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M0 140 Q120 104 240 132 T480 124 V172 H0Z" fill="#fff" fill-opacity=".05"/>
+    <path d="M0 165 C120 150 200 190 300 175 S430 160 480 170 V215 C420 205 330 222 240 215 S80 200 0 210Z" class="af" fill-opacity=".22"/>
+    <g clip-path="url(#env-river)">
+        <path class="as wave" d="M0 186 q20 -7 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" fill="none" stroke-width="2" stroke-opacity=".7"/>
+        <path class="as wave" style="animation-duration:9s" d="M-40 202 q20 -6 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" fill="none" stroke-width="1.5" stroke-opacity=".35"/>
+    </g>
+    <ellipse cx="300" cy="197" rx="6" ry="2" fill="none" class="as" stroke-width="1.5"><animate attributeName="rx" values="6;38" dur="2.6s" begin="0s" repeatCount="indefinite"/><animate attributeName="ry" values="2;9" dur="2.6s" begin="0s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.6s" begin="0s" repeatCount="indefinite"/></ellipse><ellipse cx="300" cy="197" rx="6" ry="2" fill="none" class="as" stroke-width="1.5"><animate attributeName="rx" values="6;38" dur="2.6s" begin="-1.3s" repeatCount="indefinite"/><animate attributeName="ry" values="2;9" dur="2.6s" begin="-1.3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.6s" begin="-1.3s" repeatCount="indefinite"/></ellipse>
+    <g class="bob">
+        <polygon points="291,184 309,184 304,198 296,198" class="af"/>
+        <rect x="299" y="160" width="2" height="24" fill="#fff" fill-opacity=".85"/>
+        <circle cx="300" cy="157" r="3.2" class="af blink"/>
+        <path d="M291 149 q9 -9 18 0" fill="none" class="as blink" stroke-width="1.8" stroke-linecap="round" style="animation-delay:.3s"/>
+        <path d="M285 143 q15 -15 30 0" fill="none" class="as blink" stroke-width="1.8" stroke-linecap="round" style="animation-delay:.6s"/>
+    </g>
+    <rect x="0" y="232" width="480" height="5" fill="#57B37B" fill-opacity=".55"/>
+    <rect x="0" y="237" width="480" height="27" fill="#7a5535" fill-opacity=".55"/>
+    <rect x="0" y="264" width="480" height="28" fill="#55392a" fill-opacity=".7"/>
+    <rect x="0" y="292" width="480" height="28" fill="#3a271d" fill-opacity=".85"/>
+    <circle cx="40" cy="252" r="3" fill="#fff" fill-opacity=".75" class="sink" style="animation-delay:0s"/><circle cx="110" cy="252" r="3" fill="#fff" fill-opacity=".75" class="sink" style="animation-delay:1.1s"/><circle cx="190" cy="252" r="3" fill="#fff" fill-opacity=".75" class="sink" style="animation-delay:0.5s"/><circle cx="370" cy="252" r="3" fill="#fff" fill-opacity=".75" class="sink" style="animation-delay:1.6s"/><circle cx="440" cy="252" r="3" fill="#fff" fill-opacity=".75" class="sink" style="animation-delay:0.8s"/>
+    <text x="14" y="312" class="svg-label">PEATLAND CARBON STORE</text>
+</svg></div>
+            <div class="tz-body"><span class="theme-num">THEME 02</span><h3>Water security</h3><p class="tz-lead">Machine learning for water quality forecasting and flood and drought risk.</p><p>Spatio-temporal AI monitors catchment health, predicts runoff, and forecasts compounding floods and droughts weeks to months ahead, giving early warning to protect water supplies.</p>
+            <ul class="chips"><li>Water quality</li><li>Floods &amp; droughts</li><li>Sensor networks</li><li>Early warning</li></ul></div></div><div class="tz-panel" style="--accent:#6CC77A">
+            <div class="tz-scene scene"><svg viewBox="0 0 480 320" role="img" aria-label="Animation: a satellite scanning a patchwork of fields while AI labels a forest plot">
+    <circle cx="40" cy="30" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="130" cy="18" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="220" cy="40" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="300" cy="16" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="380" cy="34" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="450" cy="22" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="90" cy="90" r="1.2" fill="#fff" fill-opacity=".4"/><circle cx="420" cy="96" r="1.2" fill="#fff" fill-opacity=".4"/>
+    <path id="l-orbit" d="M10 74 Q240 -14 470 74" fill="none" stroke="#fff" stroke-opacity=".18" stroke-dasharray="3 6"/>
+    <g transform="translate(130 168) skewX(-30) scale(1 .6)"><rect x="0" y="0" width="50" height="50" rx="3" fill="#57B37B" class="scan-tile" style="animation-delay:0.00s"/><rect x="54" y="0" width="50" height="50" rx="3" fill="#A7C957" class="scan-tile" style="animation-delay:0.38s"/><rect x="108" y="0" width="50" height="50" rx="3" fill="#C9B458" class="scan-tile" style="animation-delay:0.76s"/><rect x="162" y="0" width="50" height="50" rx="3" fill="#57B37B" class="scan-tile" style="animation-delay:1.14s"/><rect x="216" y="0" width="50" height="50" rx="3" fill="#A7C957" class="scan-tile" style="animation-delay:1.52s"/><rect x="270" y="0" width="50" height="50" rx="3" fill="#C9B458" class="scan-tile" style="animation-delay:1.90s"/><rect x="0" y="54" width="50" height="50" rx="3" fill="#2F6E4A" class="scan-tile" style="animation-delay:0.08s"/><rect x="54" y="54" width="50" height="50" rx="3" fill="#3E8E5E" class="scan-tile" style="animation-delay:0.46s"/><rect x="108" y="54" width="50" height="50" rx="3" fill="#6CC77A" class="scan-tile" style="animation-delay:0.84s"/><rect x="162" y="54" width="50" height="50" rx="3" fill="#2F6E4A" class="scan-tile" style="animation-delay:1.22s"/><rect x="216" y="54" width="50" height="50" rx="3" fill="#3E8E5E" class="scan-tile" style="animation-delay:1.60s"/><rect x="270" y="54" width="50" height="50" rx="3" fill="#6CC77A" class="scan-tile" style="animation-delay:1.98s"/><rect x="0" y="108" width="50" height="50" rx="3" fill="#C9B458" class="scan-tile" style="animation-delay:0.16s"/><rect x="54" y="108" width="50" height="50" rx="3" fill="#57B37B" class="scan-tile" style="animation-delay:0.54s"/><rect x="108" y="108" width="50" height="50" rx="3" fill="#A7C957" class="scan-tile" style="animation-delay:0.92s"/><rect x="162" y="108" width="50" height="50" rx="3" fill="#C9B458" class="scan-tile" style="animation-delay:1.30s"/><rect x="216" y="108" width="50" height="50" rx="3" fill="#57B37B" class="scan-tile" style="animation-delay:1.68s"/><rect x="270" y="108" width="50" height="50" rx="3" fill="#A7C957" class="scan-tile" style="animation-delay:2.06s"/><rect x="0" y="162" width="50" height="50" rx="3" fill="#6CC77A" class="scan-tile" style="animation-delay:0.24s"/><rect x="54" y="162" width="50" height="50" rx="3" fill="#2F6E4A" class="scan-tile" style="animation-delay:0.62s"/><rect x="108" y="162" width="50" height="50" rx="3" fill="#3E8E5E" class="scan-tile" style="animation-delay:1.00s"/><rect x="162" y="162" width="50" height="50" rx="3" fill="#6CC77A" class="scan-tile" style="animation-delay:1.38s"/><rect x="216" y="162" width="50" height="50" rx="3" fill="#2F6E4A" class="scan-tile" style="animation-delay:1.76s"/><rect x="270" y="162" width="50" height="50" rx="3" fill="#3E8E5E" class="scan-tile" style="animation-delay:2.14s"/></g>
+    <rect x="39" y="292" width="2" height="7" fill="#6b4a2f"/><circle cx="40" cy="289" r="6" fill="#2F6E4A" stroke="#57B37B" stroke-opacity=".6"/><rect x="57" y="302" width="2" height="7" fill="#6b4a2f"/><circle cx="58" cy="299" r="6" fill="#2F6E4A" stroke="#57B37B" stroke-opacity=".6"/><rect x="461" y="190" width="2" height="7" fill="#6b4a2f"/><circle cx="462" cy="187" r="6" fill="#2F6E4A" stroke="#57B37B" stroke-opacity=".6"/><rect x="447" y="204" width="2" height="7" fill="#6b4a2f"/><circle cx="448" cy="201" r="6" fill="#2F6E4A" stroke="#57B37B" stroke-opacity=".6"/><rect x="469" y="214" width="2" height="7" fill="#6b4a2f"/><circle cx="470" cy="211" r="6" fill="#2F6E4A" stroke="#57B37B" stroke-opacity=".6"/>
+    <rect x="236" y="214" width="76" height="46" rx="3" fill="none" class="as detect" stroke-width="2" stroke-dasharray="5 4"/>
+    <text x="238" y="208" class="svg-label detect" style="fill:var(--accent)">FOREST · 0.94</text>
+    <g>
+        <polygon points="-7,9 7,9 46,170 -46,170" class="af beam"/>
+        <rect x="-9" y="-6" width="18" height="13" rx="2.5" fill="#fff" fill-opacity=".92"/>
+        <rect x="-31" y="-4" width="19" height="9" rx="1.5" class="af"/>
+        <rect x="12" y="-4" width="19" height="9" rx="1.5" class="af"/>
+        <circle cx="0" cy="9" r="2.5" class="af blink"/>
+        <animateMotion dur="9s" repeatCount="indefinite" begin="-2s"><mpath href="#l-orbit"/></animateMotion>
+    </g>
+</svg></div>
+            <div class="tz-body"><span class="theme-num">THEME 03</span><h3>Land management</h3><p class="tz-lead">Peatland restoration, earth observation and biodiversity for land-use policy.</p><p>Satellite remote sensing and computer vision track land cover, forest carbon and biodiversity, giving objective spatial intelligence for agricultural policy and habitat restoration.</p>
+            <ul class="chips"><li>Earth observation</li><li>Computer vision</li><li>Peatlands</li><li>Biodiversity</li></ul></div></div><div class="tz-panel" style="--accent:#F28A6B">
+            <div class="tz-scene scene"><svg viewBox="0 0 480 320" role="img" aria-label="Animation: a flux tower on a peatland measuring carbon dioxide as it rises">
+    <rect x="340" y="24" width="120" height="86" rx="10" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".2"/>
+    <text x="352" y="44" class="svg-label">CO₂ FLUX</text>
+    <rect x="352" y="78" width="9" height="18" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.00s"/><rect x="366" y="70" width="9" height="26" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.15s"/><rect x="380" y="82" width="9" height="14" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.30s"/><rect x="394" y="64" width="9" height="32" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.45s"/><rect x="408" y="74" width="9" height="22" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.60s"/><rect x="422" y="68" width="9" height="28" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.75s"/><rect x="436" y="84" width="9" height="12" rx="2" class="af grow" fill-opacity=".8" style="animation-delay:0.90s"/>
+    <path d="M0 268 Q120 252 240 266 T480 262 V320 H0Z" fill="#57B37B" fill-opacity=".35"/>
+    <rect x="0" y="282" width="480" height="38" fill="#55392a" fill-opacity=".75"/>
+    <g stroke="#fff" stroke-opacity=".8" stroke-width="2.5" fill="none">
+        <path d="M232 268 L246 120 L260 268"/>
+        <path d="M236 230 L256 230 M239 190 L253 190 M242 150 L250 150"/>
+        <path d="M236 230 L253 190 M239 190 L250 150"/>
+    </g>
+    <line x1="246" y1="120" x2="246" y2="96" stroke="#fff" stroke-width="2.5"/>
+    <line x1="246" y1="104" x2="290" y2="104" stroke="#fff" stroke-width="2.5"/>
+    <rect x="282" y="96" width="20" height="16" rx="3" class="af"/>
+    <g class="spin" style="transform-origin:246px 92px;animation-duration:1.6s"><line x1="232" y1="92" x2="260" y2="92" stroke="#fff" stroke-width="2"/><circle cx="232" cy="92" r="3.5" fill="#fff"/><circle cx="260" cy="92" r="3.5" fill="#fff"/></g>
+    <line x1="0" y1="150" x2="480" y2="150" class="as scanline" stroke-width="1.5" stroke-dasharray="4 6"/>
+    <circle cx="292" cy="104" r="3" fill="#fff" class="blink"/>
+    <g class="rise" style="animation-delay:0s"><circle cx="70" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="61" cy="262" r="4" class="af"/><circle cx="79" cy="262" r="4" class="af"/></g><g class="rise" style="animation-delay:1.3s"><circle cx="140" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="131" cy="262" r="4" class="af"/><circle cx="149" cy="262" r="4" class="af"/></g><g class="rise" style="animation-delay:0.6s"><circle cx="330" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="321" cy="262" r="4" class="af"/><circle cx="339" cy="262" r="4" class="af"/></g><g class="rise" style="animation-delay:2.1s"><circle cx="390" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="381" cy="262" r="4" class="af"/><circle cx="399" cy="262" r="4" class="af"/></g><g class="rise" style="animation-delay:1.7s"><circle cx="450" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="441" cy="262" r="4" class="af"/><circle cx="459" cy="262" r="4" class="af"/></g><g class="rise" style="animation-delay:2.6s"><circle cx="200" cy="262" r="6" fill="#fff" fill-opacity=".85"/><circle cx="191" cy="262" r="4" class="af"/><circle cx="209" cy="262" r="4" class="af"/></g>
+    <text x="14" y="310" class="svg-label">PEATLAND</text>
+</svg></div>
+            <div class="tz-body"><span class="theme-num">THEME 04</span><h3>Emissions measurement</h3><p class="tz-lead">Sensors and physics-informed AI for greenhouse gas accounting.</p><p>Physics-informed AI links local sensors, from root cameras to soil probes, to ecosystem-scale greenhouse gas fluxes, so Ireland can measure, verify and reduce its emissions.</p>
+            <ul class="chips"><li>GHG fluxes</li><li>Physics-informed AI</li><li>Carbon accounting</li><li>Sensors</li></ul></div></div><div class="tz-panel" style="--accent:#A797F0">
+            <div class="tz-scene scene"><svg viewBox="0 0 480 320" role="img" aria-label="Animation: green investment rising while emissions fall">
+    <rect x="40" y="28" width="400" height="262" rx="14" fill="#fff" fill-opacity=".04" stroke="#fff" stroke-opacity=".12"/>
+    <rect x="66" y="48" width="9" height="9" rx="2" class="af"/><text x="82" y="56" class="svg-label">GREEN INVESTMENT</text>
+    <rect x="232" y="48" width="9" height="9" rx="2" fill="#DB9A44"/><text x="248" y="56" class="svg-label">EMISSIONS</text>
+    <line x1="70" y1="90" x2="420" y2="90" stroke="#fff" stroke-opacity=".08"/><line x1="70" y1="130" x2="420" y2="130" stroke="#fff" stroke-opacity=".08"/><line x1="70" y1="170" x2="420" y2="170" stroke="#fff" stroke-opacity=".08"/><line x1="70" y1="210" x2="420" y2="210" stroke="#fff" stroke-opacity=".08"/><line x1="70" y1="250" x2="420" y2="250" stroke="#fff" stroke-opacity=".08"/>
+    <rect x="86" y="210" width="30" height="40" rx="4" class="af grow" fill-opacity="0.35" style="animation-delay:0.00s"/><rect x="138" y="188" width="30" height="62" rx="4" class="af grow" fill-opacity="0.46" style="animation-delay:0.12s"/><rect x="190" y="168" width="30" height="82" rx="4" class="af grow" fill-opacity="0.57" style="animation-delay:0.24s"/><rect x="242" y="144" width="30" height="106" rx="4" class="af grow" fill-opacity="0.68" style="animation-delay:0.36s"/><rect x="294" y="118" width="30" height="132" rx="4" class="af grow" fill-opacity="0.79" style="animation-delay:0.48s"/><rect x="346" y="90" width="30" height="160" rx="4" class="af grow" fill-opacity="0.90" style="animation-delay:0.60s"/>
+    <polyline points="78,92 128,100 178,116 228,138 278,160 328,188 378,214 418,228" fill="none" stroke="#DB9A44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="draw"/>
+    <circle cx="418" cy="228" r="5" fill="#DB9A44" class="blink"/>
+    <g class="float">
+        <circle cx="430" cy="30" r="20" class="af"/>
+        <text x="430" y="37" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="20" font-weight="600" fill="#102A24">€</text>
+        <path d="M444 14 q12 -10 18 2 q-10 8 -18 -2z" fill="#57B37B"/>
+    </g>
+</svg></div>
+            <div class="tz-body"><span class="theme-num">THEME 05</span><h3>Sustainable finance</h3><p class="tz-lead">AI-supported sustainable finance and climate risk tools for SMEs.</p><p>NLP and machine learning pipelines automate ESG risk assessment, green portfolio alignment and transition-risk scoring, helping capital flow to verifiable decarbonisation.</p>
+            <ul class="chips"><li>NLP</li><li>ESG risk</li><li>Climate risk</li><li>SMEs</li></ul></div></div></div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 9">
+        <div class="kicker anim"><span class="tick"></span>The PhD</div>
+        <h2 class="anim">What a Decarb-AI PhD project looks like</h2>
+        <div class="equation">
+            <div class="eq-box eq-a"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><line x1="7.5" y1="7.5" x2="10.7" y2="17"/><line x1="16.5" y1="7.5" x2="13.3" y2="17"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg><b>AI or data science</b><span>supervisor</span></div>
+            <div class="eq-op eq-plus">+</div>
+            <div class="eq-box eq-b"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2s7 8.5 7 13.5A7 7 0 1 1 5 15.5C5 10.5 12 2 12 2z"/></svg><b>Climate or environment</b><span>supervisor</span></div>
+            <svg class="eq-arrow" viewBox="0 0 80 24" aria-hidden="true"><path d="M2 12h70M62 4l10 8-10 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="eq-result"><b>iScholar project</b><span>New AI methods applied to a real decarbonisation or climate-resilience challenge in Ireland</span></div>
+        </div>
+        <p class="note anim" style="--i:6">Co-supervisors at different partner institutions are encouraged, and industry mentors are welcome.</p>
+        <div class="checklist"><span class="ck-title" data-step="1">Every project should:</span><div class="ck" data-step="1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Bring AI together with a decarbonisation or climate-resilience challenge</span></div><div class="ck" data-step="2"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Fit one or more of the five research themes</span></div><div class="ck" data-step="3"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Explain its contribution to Ireland’s decarbonisation</span></div><div class="ck" data-step="4"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Describe its commercialisation potential, such as tools, licensing or spin-outs</span></div><div class="ck" data-step="5"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Use the shared Decarb-AI project template</span></div></div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 10">
+        <div class="split">
+            <div>
+                <div class="kicker anim"><span class="tick"></span>Training</div>
+                <h2 class="anim">A shared first-semester training programme</h2>
+                <ul class="points tight"><li data-step="1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>All iScholars start with a full-time training semester at UCD, whichever institution they belong to</span></li><li data-step="2"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Accredited modules in Physical Meteorology and AI for Weather and Climate</span></li><li data-step="3"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>High-performance computing, intellectual property, engaged research and presentation skills</span></li><li data-step="4"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>PhD preview weeks to meet potential supervisors and explore projects</span></li><li data-step="5"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,12 10,17 19,7"/></svg><span>Accommodation in Dublin covered for iScholars based at UL and UCC</span></li></ul>
+                <div class="semester anim" style="--i:2"><span>Month 1</span><span>Month 2</span><span>Month 3</span><div class="sem-bar"><i></i></div></div>
+                <p class="sem-note anim" style="--i:3">3 months of full-time training</p>
+            </div>
+            <div class="photo-frame drone anim" style="--i:1"><img src="talk/ucd.jpg" alt="University College Dublin"><video src="talk/ucd.mp4" muted loop playsinline preload="auto"></video></div>
+        </div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 11">
+        <div class="kicker anim"><span class="tick"></span>Training</div>
+        <h2 class="anim">Training highlights</h2>
+        <div class="mosaic">
+            <div class="m1 kb anim" style="--i:1"><img src="talk/training3.jpg" alt=""></div>
+            <div class="m2 kb anim" style="--i:2"><img src="talk/training4.jpg" alt=""></div>
+            <div class="m3 kb anim" style="--i:3"><img src="talk/training2.jpg" alt=""></div>
+            <div class="m4 kb anim" style="--i:4"><img src="talk/training1.jpg" alt=""></div>
+        </div>
+        <div class="logo-row anim" style="--i:5"><img src="talk/logo-ecmwf.jpg" alt="ECMWF"><img src="talk/logo-eumetsat.jpg" alt="EUMETSAT"><img src="talk/logo-google-earth-ai.jpg" alt="Google Earth AI"><img src="talk/logo-ibm.jpg" alt="IBM"></div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 12">
+        <div class="kicker anim"><span class="tick"></span>The iScholars</div>
+        <h2 class="anim">Our first iScholars</h2>
+        <div class="scholar-stats">
+            <div class="stat anim" style="--i:1"><div class="stat-num"><span data-count="8" data-decimals="0">8</span></div><div class="stat-label">in cohort 1</div><div class=stat-sub>started 2025/26</div></div>
+            <div class="stat anim" style="--i:2"><div class="stat-num">10+2</div><div class="stat-label">in cohort 2</div><div class="stat-sub">started September 2026</div></div>
+            <div class="stat anim" style="--i:3"><div class="stat-num"><span data-count="10" data-decimals="0">10</span></div><div class="stat-label">places in cohort 3</div></div>
+            <div class="stat anim" style="--i:4"><div class="stat-num"><span data-count="12" data-decimals="0">12</span></div><div class="stat-label">countries of origin</div><div class=stat-sub>so far</div></div>
+        </div>
+        <div class="wall"><img class="wall-face" style="--i:0" src="photos/thumbs/asrit_ganti.jpg" alt=""><img class="wall-face" style="--i:1" src="photos/thumbs/yanfeng_wang.jpg" alt=""><img class="wall-face" style="--i:2" src="photos/thumbs/purity_biwott.jpg" alt=""><img class="wall-face" style="--i:3" src="photos/thumbs/raja_prabha_poolpandy.jpg" alt=""><img class="wall-face" style="--i:4" src="photos/thumbs/lily_nobles.jpg" alt=""><img class="wall-face" style="--i:5" src="photos/thumbs/lainey_ward.jpg" alt=""><img class="wall-face" style="--i:6" src="photos/thumbs/chantelle_amoako-atta.jpg" alt=""><img class="wall-face" style="--i:7" src="photos/thumbs/quentin_cordeau.jpg" alt=""><img class="wall-face" style="--i:8" src="photos/thumbs/rajesh_subramanian.jpg" alt=""><img class="wall-face" style="--i:9" src="photos/thumbs/james_kelly.jpg" alt=""><img class="wall-face" style="--i:10" src="photos/thumbs/kalpana_thalangama_appuhamilage.jpg" alt=""><img class="wall-face" style="--i:11" src="photos/thumbs/reza_sarkhosh.jpg" alt=""><img class="wall-face" style="--i:12" src="photos/thumbs/tiwaloluwa_onibonoje.jpg" alt=""><img class="wall-face" style="--i:13" src="photos/thumbs/shae_tjong.jpg" alt=""><img class="wall-face" style="--i:14" src="photos/thumbs/maha_ezzat.jpg" alt=""><img class="wall-face" style="--i:15" src="photos/thumbs/ijlal_haidar.jpg" alt=""><img class="wall-face" style="--i:16" src="photos/thumbs/lindah_fatuma_kakai.jpg" alt=""><img class="wall-face" style="--i:17" src="photos/thumbs/ling_zhai.jpg" alt=""></div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 13">
+        <div class="kicker anim"><span class="tick"></span>iScholar spotlight</div>
+        <h2 class="anim">Meet some of our iScholars</h2>
+        <div class="spots"><div class="spot-card" data-step="1" style="--accent:#F2B544">
+            <div class="spot-photo"><svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F2B544" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg><img src="photos/thumbs/chantelle_amoako-atta_lg.jpg" alt=""></div>
+            <span class="spot-theme">Energy resources</span><h3>Chantelle Amoako-Atta</h3><span class="spot-inst">University College Dublin</span>
+            <p class="spot-proj">AI for climate-resilient offshore wind in Ireland</p><p class="spot-blurb">Extending ECMWF’s Anemoi AI forecasting system to predict wind extremes in Irish waters, and linking them to structural fatigue models so offshore wind farms stay reliable as the climate changes.</p></div><div class="spot-card" data-step="2" style="--accent:#F28A6B">
+            <div class="spot-photo"><svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#F28A6B" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg><img src="photos/thumbs/asrit_ganti_lg.jpg" alt=""></div>
+            <span class="spot-theme">Emissions measurement</span><h3>Asrit Ganti</h3><span class="spot-inst">Trinity College Dublin</span>
+            <p class="spot-proj">Physics-informed AI linking local sensors to ecosystem carbon fluxes</p><p class="spot-blurb">Connecting root cameras, soil probes and field surveys to ecosystem-scale greenhouse gas measurements, so Ireland can track carbon in peatlands more accurately.</p></div><div class="spot-card" data-step="3" style="--accent:#57B37B">
+            <div class="spot-photo"><svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="71" fill="none" stroke="#57B37B" stroke-width="3" stroke-dasharray="70 18 8 18" stroke-linecap="round"/></svg><img src="photos/thumbs/purity_biwott_lg.jpg" alt=""></div>
+            <span class="spot-theme">Decision support</span><h3>Purity Biwott</h3><span class="spot-inst">TU Dublin</span>
+            <p class="spot-proj">Designing user interfaces for climate action models</p><p class="spot-blurb">Working with policymakers, climate scientists and machine learning experts to design intuitive, explainable interfaces that make complex climate models usable for real decisions.</p></div></div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 14">
+        <div class="kicker anim"><span class="tick"></span>Beyond the PhD</div>
+        <h2 class="anim">Entrepreneurship and innovation</h2>
+        <div class="split">
+            <ul class="points"><li data-step="1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.5-2 4-2 6 2 0 4.5-.5 6-2"/><path d="M9 15l-3-3a12 12 0 0 1 12-9 12 12 0 0 1-9 12z"/><circle cx="15" cy="9" r="1.5"/></svg><span>All iScholars take part in the Entrepreneurial, Leadership &amp; Innovation programme with Global Innovators Ireland</span></li><li data-step="2"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><line x1="7.5" y1="7.5" x2="10.7" y2="17"/><line x1="16.5" y1="7.5" x2="13.3" y2="17"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg><span>Innovation Ecosystem events bring together iScholars from every Innovate for Ireland centre</span></li><li data-step="3"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span>Technology transfer offices, such as NovaUCD, support IP and spin-outs</span></li></ul>
+            <div class="sandbox" data-step="4"><span class="badge">November 2026</span><h3>AI &amp; Climate Sustainability Sandbox</h3><p>iScholars tackle real company challenges with AI.</p><span class="url">ictskillnet.ie/courses/ai-climate-sustainability-sandbox</span></div>
+        </div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 15">
+        <div class="split">
+            <div>
+                <div class="kicker anim"><span class="tick"></span>Internships</div>
+                <h2 class="anim">Real-world placements</h2>
+                <div class="big-stat anim" style="--i:1">up to <span data-count="12">12</span> weeks</div>
+                <p class="lead anim" style="--i:2">Placements in industry or the public sector, with a budget for relocation costs.</p>
+                <img class="galetech anim" style="--i:3" src="talk/logo-galetech.png" alt="Galetech Group">
+            </div>
+            <div class="intern-photos">
+                <img class="ip1 anim" style="--i:2" src="talk/intern3.jpg" alt="">
+                <img class="ip2 anim" style="--i:3" src="talk/intern2.jpg" alt="">
+                <img class="ip3 anim" style="--i:4" src="talk/intern1.jpg" alt="">
+            </div>
+        </div>
+</section>
+<section class="slide dark" data-kind="" aria-label="Slide 16">
+        <div class="kicker anim"><span class="tick"></span>Investment</div>
+        <h2 class="anim">What each iScholar is funded for</h2>
+        <div class="funding">
+            <div class="fund anim" style="--i:1"><div class="fund-num">€<span data-count="192">192</span>k</div><p>per iScholar over four years</p></div>
+            <div class="fund anim" style="--i:2"><div class="fund-num">€<span data-count="31">31</span>k</div><p>tax-free stipend each year, plus fees</p></div>
+            <div class="fund anim" style="--i:3"><div class="fund-num">€<span data-count="46">46</span>k</div><p>for research, training, travel and placement</p></div>
+        </div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 17">
+        <div class="kicker anim"><span class="tick"></span>Community</div>
+        <h2 class="anim">Community, events and website</h2>
+        <div class="events"><div class="event" data-step="1"><span class=ev-date>14 Jan 2027</span><span class="ev-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><h3>Winter Symposium</h3><p>Thursday 14th January 2027 at UCD, with talks from iScholars and invited experts</p></div><div class="event" data-step="2"><span class="ev-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg></span><h3>Mini-symposia</h3><p>With Aimsir and the Climate+ Co-Centre</p></div><div class="event" data-step="3"><span class="ev-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><line x1="7.5" y1="7.5" x2="10.7" y2="17"/><line x1="16.5" y1="7.5" x2="13.3" y2="17"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg></span><h3>Innovation Ecosystem</h3><p>Events with iScholars from across Innovate for Ireland</p></div><div class="event" data-step="4"><span class="ev-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><h3>decarb-ai.org</h3><p>News, training and projects</p></div></div>
+</section>
+<section class="slide dark title" data-kind="thanks" aria-label="Slide 18">
+        <div class="bg-photo dim" style="background-image:url(images/Picture7.jpg)"></div>
+        <canvas class="net"></canvas>
+        <div class="thanks">
+            <div>
+                <h1 class="anim">Thank you</h1>
+                <p class="title-sub anim" style="--i:1">Questions? Contact Andrew Parnell<br><span class="mono">andrew.parnell1@ucd.ie</span></p>
+                <p class="ack anim" style="--i:3">“This research has emanated from research jointly funded by Taighde Éireann – Research Ireland and by AIB, under the Innovate for Ireland Programme, Grant number 25/I4I-TC/13542”</p>
+            </div>
+            <div class="qr-card anim" style="--i:2"><div id="qr"></div><span>decarb-ai.org</span></div>
+        </div>
+</section>
+<div id="brand">decarb<em>-ai</em>.org</div>
+<div id="counter"></div>
+<div id="progress"></div>
+</div></div>
+<div id="help">&rarr; / space / clicker to advance &middot; &larr; back &middot; F fullscreen</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+    var stage = document.getElementById('stage');
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var progress = document.getElementById('progress');
+    var counter = document.getElementById('counter');
+    var current = 0, step = 0;
+
+    // fit the 1600x900 stage to the window
+    function fit() {
+        var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+        stage.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+
+    function maxStep(slide) {
+        if (slide.dataset.kind === 'themes') return 4;
+        if (slide.dataset.kind === 'cohort') return 4;
+        var max = 0;
+        slide.querySelectorAll('[data-step]').forEach(function (el) { max = Math.max(max, Number(el.dataset.step)); });
+        return max;
+    }
+
+    function countUp(slide) {
+        slide.querySelectorAll('[data-count]').forEach(function (el) {
+            var target = parseFloat(el.dataset.count), dec = Number(el.dataset.decimals || 0), start = null;
+            function frame(t) {
+                if (start === null) start = t;
+                var p = Math.min(1, (t - start) / 1500), v = target * (1 - Math.pow(1 - p, 3));
+                el.textContent = v.toLocaleString('en-IE', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+                if (p < 1) requestAnimationFrame(frame);
+            }
+            el.textContent = (0).toFixed(dec);
+            setTimeout(function () { requestAnimationFrame(frame); }, 350);
+        });
+    }
+
+    // slide-specific step behaviour
+    var cohortOrder = ['cohort', 'supervisors', 'institutions', 'ai'];
+    function applyStep(slide) {
+        var kind = slide.dataset.kind;
+        slide.querySelectorAll('[data-step]').forEach(function (el) { el.classList.toggle('shown', Number(el.dataset.step) <= step); });
+        if (kind === 'themes') {
+            slide.querySelectorAll('.tz-panel').forEach(function (p, i) { p.classList.toggle('on', i === step); });
+            slide.querySelectorAll('.tz-dot').forEach(function (d, i) { d.classList.toggle('on', i <= step); });
+        }
+        if (kind === 'cohort') {
+            var svg = slide.querySelector('.cm-diagram'), key = cohortOrder[step - 1];
+            svg.classList.toggle('focusing', !!key);
+            slide.querySelectorAll('[data-links]').forEach(function (el) {
+                el.classList.toggle('on', !!key && el.getAttribute('data-links').split(' ').indexOf(key) !== -1);
+            });
+            slide.querySelectorAll('.cm-cap').forEach(function (c) { c.classList.toggle('on', c.dataset.key === key); });
+        }
+        if (kind === 'timeline') {
+            slide.querySelector('.tl-line').style.setProperty('--tl', step <= 1 ? 0 : (step - 1) / 3);
+        }
+    }
+
+    function show(n, atEnd) {
+        n = Math.max(0, Math.min(slides.length - 1, n));
+        var changed = n !== current || !slides[n].classList.contains('active');
+        slides.forEach(function (s, i) {
+            s.classList.toggle('active', i === n);
+            s.classList.toggle('past', i < n);
+        });
+        current = n;
+        step = atEnd ? maxStep(slides[n]) : 0;
+        applyStep(slides[n]);
+        if (changed) countUp(slides[n]);
+        progress.style.width = ((n + 1) / slides.length * 100) + '%';
+        counter.textContent = String(n + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+        if (location.hash !== '#' + (n + 1)) history.replaceState(null, '', '#' + (n + 1));
+        nets.forEach(function (net) { net.running = slides[n].contains(net.canvas); });
+        document.querySelectorAll('.photo-frame.drone video').forEach(function (v) {
+            if (slides[n].contains(v)) { v.currentTime = 0; v.play().catch(function () {}); } else v.pause();
+        });
+    }
+    function next() {
+        if (step < maxStep(slides[current])) { step++; applyStep(slides[current]); }
+        else if (current < slides.length - 1) show(current + 1);
+    }
+    function prev() {
+        if (step > 0) { step--; applyStep(slides[current]); }
+        else if (current > 0) show(current - 1, true);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        var k = e.key;
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter', 'n'].indexOf(k) !== -1) { e.preventDefault(); next(); }
+        else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace', 'p'].indexOf(k) !== -1) { e.preventDefault(); prev(); }
+        else if (k === 'Home') show(0);
+        else if (k === 'End') show(slides.length - 1);
+        else if (k === 'f' || k === 'F') {
+            if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+        }
+    });
+    document.getElementById('deck').addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        (e.clientX > window.innerWidth / 3 ? next : prev)();
+    });
+    var touchX = null;
+    document.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+        if (touchX === null) return;
+        var dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+        if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+    });
+    window.addEventListener('hashchange', function () {
+        var n = parseInt(location.hash.slice(1), 10) - 1;
+        if (!isNaN(n) && n !== current) show(n);
+    });
+
+    // AI network canvases on the title and closing slides
+    var nets = Array.prototype.map.call(document.querySelectorAll('canvas.net'), function (canvas) {
+        var ctx = canvas.getContext('2d'), W = 1600, H = 900, dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = W * dpr; canvas.height = H * dpr; ctx.scale(dpr, dpr);
+        var EMBER = [219, 154, 68], MOSS = [87, 179, 123], nodes = [], pulses = [];
+        function mix(y) { var t = Math.min(1, Math.max(0, 1 - y / H * 1.15 + .1)); return [0, 1, 2].map(function (i) { return Math.round(EMBER[i] + (MOSS[i] - EMBER[i]) * t); }); }
+        function make(randomY) { return { x: Math.random() * W, y: randomY ? Math.random() * H : H + 10, vx: (Math.random() - .5) * .25, vy: -(.15 + Math.random() * .35), r: 1.2 + Math.random() * 2 }; }
+        for (var i = 0; i < 150; i++) nodes.push(make(true));
+        var net = { canvas: canvas, running: false };
+        function frame() {
+            requestAnimationFrame(frame);
+            if (!net.running || document.hidden) return;
+            ctx.clearRect(0, 0, W, H);
+            var a, b, dx, dy, d, c, j;
+            for (i = 0; i < nodes.length; i++) {
+                a = nodes[i]; a.x += a.vx; a.y += a.vy;
+                if (a.y < -10) nodes[i] = a = make(false);
+                if (a.x < -10) a.x = W + 10; if (a.x > W + 10) a.x = -10;
+            }
+            ctx.lineWidth = 1;
+            for (i = 0; i < nodes.length; i++) {
+                a = nodes[i];
+                for (j = i + 1; j < nodes.length; j++) {
+                    b = nodes[j]; dx = a.x - b.x; dy = a.y - b.y; d = dx * dx + dy * dy;
+                    if (d < 22000) {
+                        d = Math.sqrt(d); c = mix((a.y + b.y) / 2);
+                        ctx.strokeStyle = 'rgba(' + c + ',' + (1 - d / 148) * .42 + ')';
+                        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+                        if (pulses.length < 18 && Math.random() < .0008) pulses.push({ a: a, b: b, t: 0 });
+                    }
+                }
+            }
+            for (i = 0; i < nodes.length; i++) { a = nodes[i]; ctx.fillStyle = 'rgba(' + mix(a.y) + ',.9)'; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill(); }
+            for (i = pulses.length - 1; i >= 0; i--) {
+                var p = pulses[i]; p.t += .025;
+                if (p.t >= 1) { pulses.splice(i, 1); continue; }
+                var px = p.a.x + (p.b.x - p.a.x) * p.t, py = p.a.y + (p.b.y - p.a.y) * p.t, g = ctx.createRadialGradient(px, py, 0, px, py, 9);
+                g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(87,179,123,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(px, py, 9, 0, 6.283); ctx.fill();
+            }
+        }
+        requestAnimationFrame(frame);
+        return net;
+    });
+
+    // QR code to the website on the closing slide (needs the CDN; falls back to the URL text)
+    if (window.QRCode) new QRCode(document.getElementById('qr'), { text: 'https://decarb-ai.org', width: 520, height: 520, colorDark: '#102A24', colorLight: '#ffffff' });
+
+    // optional UCD footage on the training slide (falls back to the photo)
+    document.querySelectorAll('.photo-frame.drone video').forEach(function (v) {
+        v.addEventListener('canplay', function () { v.parentNode.classList.add('has-video'); });
+        v.addEventListener('error', function () { v.remove(); });
+    });
+    var start = parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(start) ? 0 : start);
+    var help = document.getElementById('help');
+    setTimeout(function () { help.classList.add('gone'); }, 4500);
+})();
+</script>
+</body>
+</html>
