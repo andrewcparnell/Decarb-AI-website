@@ -78,6 +78,12 @@ h3 { font-size: 26px; line-height: 1.25; }
 .slide.title h1 { font-size: 60px; color: #fff; line-height: 1.15; }
 .title-sub { font-size: 28px; color: rgba(255,255,255,.78); margin: 18px 0 0; }
 .title-who { font-family: var(--font-mono); font-size: 18px; letter-spacing: .1em; text-transform: uppercase; color: var(--ember); margin-top: 40px; }
+.slide.title:has(.partner-band) { padding-bottom: 210px; }
+.partner-band { position: absolute !important; left: 110px; right: 110px; bottom: 64px; height: 112px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    background: rgba(255,255,255,.95); border-radius: 20px; padding: 0 36px; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.partner-band img { height: 56px; width: auto; max-width: 170px; object-fit: contain; }
+.partner-band img.tall { height: 78px; }
+.pb-label { font-family: var(--font-mono); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); max-width: 110px; line-height: 1.4; }
 .title-logos { display: flex; align-items: center; gap: 44px; margin-top: 34px; background: rgba(255,255,255,.92); border-radius: 18px; padding: 14px 34px; }
 .title-logos img { height: 86px; width: auto; display: block; }
 .title-logos img.aib { height: 124px; margin: -19px -16px; }
@@ -385,8 +391,17 @@ h3 { font-size: 26px; line-height: 1.25; }
             <div class="logo-card anim"><img src="images/Logo1.png" alt="Decarb-AI"></div>
             <h1 class="anim" style="--i:1">AI-Powered Pathways to Climate Resilience</h1>
             <p class="title-sub anim" style="--i:2">The first Innovate for Ireland National Centre</p>
-            <p class="title-who anim" style="--i:3">Prof. Andrew Parnell &middot; Director &middot; University College Dublin</p>
-            <div class="title-logos anim" style="--i:4"><img src="images/I4I_logo.png" alt="Innovate for Ireland"><img class="aib" src="images/AIB_logo.png" alt="AIB"><img src="images/Research_Ireland_logo.png" alt="Research Ireland"></div>
+            <div class="title-logos anim" style="--i:3"><img src="images/I4I_logo.png" alt="Innovate for Ireland"><img class="aib" src="images/AIB_logo.png" alt="AIB"><img src="images/Research_Ireland_logo.png" alt="Research Ireland"></div>
+        </div>
+        <div class="partner-band anim" style="--i:5">
+            <span class="pb-label">Partner institutions</span>
+            <img src="talk/partners/ucd.png" alt="University College Dublin" class="tall">
+            <img src="talk/partners/tcd.png" alt="Trinity College Dublin">
+            <img src="talk/partners/dcu.png" alt="Dublin City University">
+            <img src="talk/partners/tudublin.png" alt="TU Dublin">
+            <img src="talk/partners/ul.png" alt="University of Limerick">
+            <img src="talk/partners/ucc.png" alt="University College Cork">
+            <img src="talk/partners/ichec.png" alt="ICHEC">
         </div>
 </section>
 <section class="slide light" data-kind="" aria-label="Slide 2">
@@ -418,7 +433,12 @@ h3 { font-size: 26px; line-height: 1.25; }
             </ul>
         </div>
 </section>
-<section class="slide light" data-kind="" aria-label="Slide 4">
+<section class="slide dark" data-kind="" aria-label="Slide 4">
+        <div class="kicker anim"><span class="tick"></span>The leadership team</div>
+        <h2 class="anim">Principal Investigators across seven partners</h2>
+        <div class="leaders"><div class="leader anim" style="--i:0"><img src="photos/andrew_parnell.png" alt=""><b>Andrew Parnell</b><span class="role">Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:1"><img src="photos/fiachra_oloughlin.png" alt=""><b>Fiachra O’Loughlin</b><span class="role">Deputy Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:2"><img src="photos/fiona_regan.png" alt=""><b>Fiona Regan</b><span class="role">Principal Investigator</span><span>Dublin City University</span></div><div class="leader anim" style="--i:3"><img src="photos/ian_donohue.png" alt=""><b>Ian Donohue</b><span class="role">Principal Investigator</span><span>Trinity College Dublin</span></div><div class="leader anim" style="--i:4"><img src="photos/dympna_osullivan.png" alt=""><b>Dympna O’Sullivan</b><span class="role">Principal Investigator</span><span>TU Dublin</span></div><div class="leader anim" style="--i:5"><img src="photos/jean_odwyer.png" alt=""><b>Jean O’Dwyer</b><span class="role">Principal Investigator</span><span>University College Cork</span></div><div class="leader anim" style="--i:6"><img src="photos/ken_byrne.png" alt=""><b>Ken Byrne</b><span class="role">Principal Investigator</span><span>University of Limerick</span></div><div class="leader anim" style="--i:7"><img src="photos/venkatesh_kannan.png" alt=""><b>Venkatesh Kannan</b><span class="role">Principal Investigator</span><span>ICHEC</span></div></div>
+</section>
+<section class="slide light" data-kind="" aria-label="Slide 5">
         <div class="kicker anim"><span class="tick"></span>Part of Innovate for Ireland</div>
         <h2 class="anim">Training entrepreneurial research leaders</h2>
         <p class="lead anim" style="--i:1">Decarb-AI is the first national centre in Innovate for Ireland, a partnership between the State and the private sector that trains PhD “iScholars” to become entrepreneurial research leaders.</p>
@@ -426,7 +446,7 @@ h3 { font-size: 26px; line-height: 1.25; }
         <div class="funders anim" style="--i:3"><span>Funded by Research Ireland and AIB, supported by Global Innovators Ireland</span>
             <img src="images/Research_Ireland_logo.png" alt="Research Ireland"><img src="images/AIB_logo.png" alt="AIB"><img src="images/I4I_logo.png" alt="Innovate for Ireland"></div>
 </section>
-<section class="slide light cohort-slide" data-kind="cohort" aria-label="Slide 5">
+<section class="slide light cohort-slide" data-kind="cohort" aria-label="Slide 6">
         <div class="cm-grid">
             <div class="cm-diagram anim"><svg viewBox="64 2 392 376" role="img" aria-label="Diagram: a cohort of iScholars linked to each other, to supervisors and to seven partner institutions, all around a core of frontier AI">
             <path data-links="ai" d="M260.0 190.0 L260.0 110.0" stroke="#57B37B" stroke-opacity=".35" stroke-width="1.2"/>
@@ -508,11 +528,6 @@ h3 { font-size: 26px; line-height: 1.25; }
                 <div class="cm-caps"><div class="cm-cap" data-key="cohort" style="--c:#DB9A44"><b>The cohort</b>iScholars train together, starting with a three-month programme in AI, decarbonisation and high-performance computing, and keep learning from each other across disciplines and institutions.</div><div class="cm-cap" data-key="supervisors" style="--c:#8C7BD6"><b>Supervisors</b>Leading academics from every partner institution guide each project, with many co-supervised across disciplines and universities.</div><div class="cm-cap" data-key="institutions" style="--c:#3FA7B3"><b>Institutions</b>Seven partners, from universities to ICHEC, Ireland’s national high-performance computing centre, open up their expertise, facilities and networks to every iScholar.</div><div class="cm-cap" data-key="ai" style="--c:#57B37B"><b>Frontier AI</b>From AI weather models like ECMWF’s Anemoi to physics-informed neural networks and large language models, applied to real climate problems.</div></div>
             </div>
         </div>
-</section>
-<section class="slide dark" data-kind="" aria-label="Slide 6">
-        <div class="kicker anim"><span class="tick"></span>The leadership team</div>
-        <h2 class="anim">Principal Investigators across seven partners</h2>
-        <div class="leaders"><div class="leader anim" style="--i:0"><img src="photos/andrew_parnell.png" alt=""><b>Andrew Parnell</b><span class="role">Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:1"><img src="photos/fiachra_oloughlin.png" alt=""><b>Fiachra O’Loughlin</b><span class="role">Deputy Director</span><span>University College Dublin</span></div><div class="leader anim" style="--i:2"><img src="photos/fiona_regan.png" alt=""><b>Fiona Regan</b><span class="role">Principal Investigator</span><span>Dublin City University</span></div><div class="leader anim" style="--i:3"><img src="photos/ian_donohue.png" alt=""><b>Ian Donohue</b><span class="role">Principal Investigator</span><span>Trinity College Dublin</span></div><div class="leader anim" style="--i:4"><img src="photos/dympna_osullivan.png" alt=""><b>Dympna O’Sullivan</b><span class="role">Principal Investigator</span><span>TU Dublin</span></div><div class="leader anim" style="--i:5"><img src="photos/jean_odwyer.png" alt=""><b>Jean O’Dwyer</b><span class="role">Principal Investigator</span><span>University College Cork</span></div><div class="leader anim" style="--i:6"><img src="photos/ken_byrne.png" alt=""><b>Ken Byrne</b><span class="role">Principal Investigator</span><span>University of Limerick</span></div><div class="leader anim" style="--i:7"><img src="photos/venkatesh_kannan.png" alt=""><b>Venkatesh Kannan</b><span class="role">Principal Investigator</span><span>ICHEC</span></div></div>
 </section>
 <section class="slide dark" data-kind="" aria-label="Slide 7">
         <div class="kicker anim"><span class="tick"></span>Research</div>
